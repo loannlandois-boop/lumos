@@ -168,6 +168,57 @@ button{cursor:pointer;font-family:var(--fb)}
 }
 #load-pct{color:var(--cyan-2)}
 
+/* ══════════ LOCK SCREEN ══════════ */
+#lock{
+  position:fixed;inset:0;z-index:2500;
+  background:radial-gradient(ellipse 90% 70% at 50% 35%,#0B1B30 0%,#04080F 75%);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .6s ease,visibility .6s;overflow:hidden;
+}
+#lock.gone{opacity:0;visibility:hidden;pointer-events:none}
+#lock-net{position:absolute;inset:0;opacity:.6}
+.lock-box{
+  position:relative;z-index:5;
+  width:min(380px,90vw);
+  background:var(--panel-2);backdrop-filter:blur(20px);
+  border:1px solid var(--line-2);border-radius:var(--rl);
+  padding:36px 32px;text-align:center;
+  box-shadow:0 0 60px rgba(56,189,248,.15),0 24px 60px rgba(0,0,0,.5);
+  animation:lockIn .5s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes lockIn{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+.lock-box::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+}
+.lock-icon{
+  width:54px;height:54px;margin:0 auto 18px;
+  display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:linear-gradient(135deg,rgba(56,189,248,.25),rgba(56,189,248,.06));
+  border:1px solid var(--line-2);
+}
+.lock-icon svg{filter:drop-shadow(0 0 6px rgba(56,189,248,.8))}
+.lock-title{
+  font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:.22em;
+  color:var(--ice);text-transform:uppercase;margin-bottom:6px;
+}
+.lock-sub{
+  font-family:var(--fd);font-size:8.5px;letter-spacing:.28em;
+  color:var(--cyan);text-transform:uppercase;margin-bottom:26px;
+}
+.lock-box .fg{text-align:left}
+.lock-err{
+  font-family:var(--fd);font-size:9px;letter-spacing:.14em;
+  color:var(--danger);text-transform:uppercase;
+  margin-top:12px;min-height:14px;
+}
+.lock-remember{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:16px;font-size:12px;color:var(--dim);cursor:pointer;user-select:none;
+}
+.lock-remember input{accent-color:var(--cyan);width:14px;height:14px;cursor:pointer}
+
 /* ══════════ LAYOUT ══════════ */
 #app{display:flex;height:100vh;overflow:hidden;position:relative;z-index:1}
 
@@ -902,6 +953,43 @@ button{cursor:pointer;font-family:var(--fb)}
   </div>
 </div>
 
+<!-- ═══════════ LOCK SCREEN ═══════════ -->
+<div id="lock" class="gone">
+  <canvas id="lock-net"></canvas>
+  <div class="lock-box">
+    <div class="lock-icon">
+      <svg width="22" height="26" viewBox="0 0 22 26" fill="none">
+        <rect x="2" y="11" width="18" height="13" rx="2" stroke="#38BDF8" stroke-width="1.6"/>
+        <path d="M6 11V7a5 5 0 0110 0v4" stroke="#38BDF8" stroke-width="1.6"/>
+        <circle cx="11" cy="17.5" r="1.8" fill="#38BDF8"/>
+      </svg>
+    </div>
+    <div class="lock-title" id="lock-title">Accès restreint</div>
+    <div class="lock-sub" id="lock-sub">Authentification requise</div>
+
+    <div class="fg">
+      <label for="lock-user">Identifiant</label>
+      <input type="text" id="lock-user" placeholder="Votre identifiant" maxlength="40" autocomplete="username">
+    </div>
+    <div class="fg">
+      <label for="lock-pass">Mot de passe</label>
+      <input type="password" id="lock-pass" placeholder="••••••••" maxlength="64" autocomplete="current-password">
+    </div>
+    <div class="fg" id="lock-confirm-wrap" style="display:none">
+      <label for="lock-pass2">Confirmer le mot de passe</label>
+      <input type="password" id="lock-pass2" placeholder="••••••••" maxlength="64" autocomplete="new-password">
+    </div>
+
+    <button class="btn btn-solid" id="lock-btn" onclick="lockSubmit()" style="width:100%;justify-content:center;margin-top:8px">Se connecter</button>
+
+    <label class="lock-remember" id="lock-remember-wrap">
+      <input type="checkbox" id="lock-remember" checked> Rester connecté sur cet appareil
+    </label>
+
+    <div class="lock-err" id="lock-err"></div>
+  </div>
+</div>
+
 <!-- ═══════════ APP ═══════════ -->
 <div id="app">
 
@@ -1155,6 +1243,24 @@ button{cursor:pointer;font-family:var(--fb)}
       </div>
 
       <div class="ss">
+        <div class="ss-lbl">Sécurité</div>
+        <div class="trow panel">
+          <div>
+            <div class="tlabel">Session active</div>
+            <div class="tsub" id="auth-user-sub">Connecté</div>
+          </div>
+          <button class="btn btn-sm btn-ghost" onclick="logout()">Se déconnecter</button>
+        </div>
+        <div class="trow panel">
+          <div>
+            <div class="tlabel">Identifiants</div>
+            <div class="tsub">Supprime le compte actuel pour en recréer un</div>
+          </div>
+          <button class="btn btn-sm btn-danger" onclick="if(confirm('Réinitialiser les identifiants ? Vos données (routines, agenda…) seront conservées.'))resetPassword()">Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="ss">
         <div class="ss-lbl">Données</div>
         <div class="data-btns">
           <button class="btn" onclick="exportData()">⭳ Exporter</button>
@@ -1256,7 +1362,8 @@ button{cursor:pointer;font-family:var(--fb)}
 /* ── KEYS & STATE ── */
 const K = {
   routines:'lumos_routines', agenda:'lumos_agenda', scores:'lumos_scores',
-  notify:'lumos_notify', name:'lumos_name', theme:'lumos_theme', net:'lumos_net'
+  notify:'lumos_notify', name:'lumos_name', theme:'lumos_theme', net:'lumos_net',
+  auth:'lumos_auth', session:'lumos_session'
 };
 const EV_COLORS = ['#38BDF8','#9B7BF8','#4ADE80','#F87171','#FBBF24','#F472B6'];
 let selColor = EV_COLORS[0];
@@ -1264,9 +1371,143 @@ let selDate = null;
 let calY, calM;
 let netOn = true;
 
+/* ══════════ AUTH ══════════ */
+let authMode = 'login'; // 'setup' | 'login'
+
+async function sha256(str) {
+  if (crypto.subtle) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+  // fallback simple (contexte non sécurisé)
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h |= 0; }
+  return 'f' + Math.abs(h).toString(16);
+}
+
+function getAuth(){ return JSON.parse(localStorage.getItem(K.auth) || 'null'); }
+
+function isLoggedIn() {
+  const a = getAuth();
+  if (!a) return false;
+  return sessionStorage.getItem(K.session) === a.hash || localStorage.getItem(K.session) === a.hash;
+}
+
+function showLock() {
+  const a = getAuth();
+  authMode = a ? 'login' : 'setup';
+  document.getElementById('lock-title').textContent = a ? 'Accès restreint' : 'Création du compte';
+  document.getElementById('lock-sub').textContent = a ? 'Authentification requise' : 'Définissez vos identifiants';
+  document.getElementById('lock-btn').textContent = a ? 'Se connecter' : 'Créer mon accès';
+  document.getElementById('lock-confirm-wrap').style.display = a ? 'none' : 'block';
+  document.getElementById('lock').classList.remove('gone');
+  startLockNet();
+  setTimeout(() => document.getElementById('lock-user').focus(), 300);
+}
+
+async function lockSubmit() {
+  const user = document.getElementById('lock-user').value.trim();
+  const pass = document.getElementById('lock-pass').value;
+  const err  = document.getElementById('lock-err');
+  err.textContent = '';
+
+  if (!user || !pass) { err.textContent = 'Champs requis'; shake('lock-pass'); return; }
+
+  if (authMode === 'setup') {
+    const pass2 = document.getElementById('lock-pass2').value;
+    if (pass.length < 4) { err.textContent = 'Mot de passe : 4 caractères minimum'; shake('lock-pass'); return; }
+    if (pass !== pass2)  { err.textContent = 'Les mots de passe ne correspondent pas'; shake('lock-pass2'); return; }
+    const hash = await sha256(user.toLowerCase() + '::' + pass);
+    localStorage.setItem(K.auth, JSON.stringify({ user, hash }));
+    grantSession(hash);
+    unlock();
+    toast('Compte créé · Bienvenue ' + user + ' ✓');
+  } else {
+    const a = getAuth();
+    const hash = await sha256(user.toLowerCase() + '::' + pass);
+    if (a && user.toLowerCase() === a.user.toLowerCase() && hash === a.hash) {
+      grantSession(hash);
+      unlock();
+      toast('Accès autorisé ✓');
+    } else {
+      err.textContent = 'Identifiant ou mot de passe incorrect';
+      shake('lock-pass');
+      document.getElementById('lock-pass').value = '';
+    }
+  }
+}
+
+function grantSession(hash) {
+  sessionStorage.setItem(K.session, hash);
+  if (document.getElementById('lock-remember').checked) localStorage.setItem(K.session, hash);
+  else localStorage.removeItem(K.session);
+}
+
+function unlock() {
+  document.getElementById('lock').classList.add('gone');
+  document.getElementById('lock-pass').value = '';
+  document.getElementById('lock-pass2').value = '';
+  stopLockNet();
+}
+
+function logout() {
+  sessionStorage.removeItem(K.session);
+  localStorage.removeItem(K.session);
+  location.reload();
+}
+
+function resetPassword() {
+  localStorage.removeItem(K.auth);
+  sessionStorage.removeItem(K.session);
+  localStorage.removeItem(K.session);
+  location.reload();
+}
+
+/* réseau animé du lock screen */
+let lockRaf = null;
+function startLockNet() {
+  const cv = document.getElementById('lock-net');
+  const ctx = cv.getContext('2d');
+  let W = cv.width = innerWidth, H = cv.height = innerHeight;
+  const nodes = Array.from({length: 40}, () => ({
+    x: Math.random()*W, y: Math.random()*H,
+    vx: (Math.random()-.5)*.4, vy: (Math.random()-.5)*.4,
+    r: 1 + Math.random()*1.6
+  }));
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+    });
+    for (let i = 0; i < nodes.length; i++)
+      for (let j = i+1; j < nodes.length; j++) {
+        const d = Math.hypot(nodes[i].x-nodes[j].x, nodes[i].y-nodes[j].y);
+        if (d < 150) {
+          ctx.strokeStyle = `rgba(56,189,248,${(1-d/150)*.25})`;
+          ctx.lineWidth = .5;
+          ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke();
+        }
+      }
+    nodes.forEach(n => {
+      ctx.fillStyle = 'rgba(125,211,252,.6)';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, 7); ctx.fill();
+    });
+    lockRaf = requestAnimationFrame(draw);
+  }
+  draw();
+}
+function stopLockNet(){ if (lockRaf) { cancelAnimationFrame(lockRaf); lockRaf = null; } }
+
 /* ── BOOT ── */
 document.addEventListener('DOMContentLoaded', () => {
   runSplash();
+  // après le splash : login si nécessaire
+  setTimeout(() => { if (!isLoggedIn()) showLock(); }, 3300);
+  // Enter dans les champs du lock
+  ['lock-user','lock-pass','lock-pass2'].forEach(id =>
+    document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') lockSubmit(); }));
   initTheme();
   initClock();
   initTabs();
@@ -1465,7 +1706,10 @@ function updateGreeting(n) {
   document.getElementById('pg-greeting').textContent = n ? `${grt}, ${n}` : 'Mes Routines';
 }
 function updateSidebarUser() {
-  const n = localStorage.getItem(K.name) || '';
+  const a = getAuth();
+  const n = localStorage.getItem(K.name) || (a ? a.user : '');
+  const sub = document.getElementById('auth-user-sub');
+  if (sub) sub.textContent = a ? `Connecté en tant que ${a.user}` : 'Aucun compte';
   document.getElementById('sb-uname').textContent = n || 'Invité';
   document.getElementById('sb-avatar').textContent = n ? n[0].toUpperCase() : '?';
   document.getElementById('sb-score-mini').textContent = `Score · ${computeScore()}%`;
