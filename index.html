@@ -987,13 +987,35 @@ button{cursor:pointer;font-family:var(--fb)}
       <input type="password" id="lock-pass2" placeholder="••••••••" maxlength="64" autocomplete="new-password">
     </div>
 
+    <!-- Question secrète (création + récupération) -->
+    <div id="lock-recovery-wrap" style="display:none">
+      <div class="fg">
+        <label for="lock-question">Question secrète</label>
+        <input type="text" id="lock-question" placeholder="ex : Nom de mon premier animal ?" maxlength="80">
+      </div>
+      <div class="fg">
+        <label for="lock-answer">Réponse</label>
+        <input type="text" id="lock-answer" placeholder="Votre réponse" maxlength="60" autocomplete="off">
+      </div>
+    </div>
+
     <button class="btn btn-solid" id="lock-btn" onclick="lockSubmit()" style="width:100%;justify-content:center;margin-top:8px">Se connecter</button>
+
+    <!-- Bouton biométrie -->
+    <button class="btn" id="lock-bio-btn" onclick="bioUnlock()" style="display:none;width:100%;justify-content:center;margin-top:10px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="margin-right:4px">
+        <path d="M12 11c0 3-1 5-1 5M7 13c0 0 .5-2 .5-4a4.5 4.5 0 019 0M4.5 11a7.5 7.5 0 0115 0M9.5 17c.5-1 .5-2 .5-3a2 2 0 014 0M15 16c0 0 0 1-.5 2"/>
+      </svg>
+      Déverrouiller avec Face ID
+    </button>
 
     <label class="lock-remember" id="lock-remember-wrap">
       <input type="checkbox" id="lock-remember" checked> Rester connecté sur cet appareil
     </label>
 
     <div class="lock-err" id="lock-err"></div>
+
+    <button id="lock-forgot" onclick="forgotPassword()" style="background:none;border:none;color:var(--dim);font-size:11px;letter-spacing:.05em;margin-top:14px;text-decoration:underline;cursor:pointer">Mot de passe oublié ?</button>
   </div>
 </div>
 
@@ -1275,6 +1297,13 @@ button{cursor:pointer;font-family:var(--fb)}
           </div>
           <button class="btn btn-sm btn-ghost" onclick="logout()">Se déconnecter</button>
         </div>
+        <div class="trow panel" id="bio-row" style="display:none">
+          <div>
+            <div class="tlabel">Face ID / Empreinte</div>
+            <div class="tsub" id="bio-sub">Déverrouillez avec Face ID ou empreinte</div>
+          </div>
+          <button class="btn btn-sm btn-solid" id="bio-btn" onclick="enableBio()">Activer</button>
+        </div>
         <div class="trow panel">
           <div>
             <div class="tlabel">Identifiants</div>
@@ -1417,46 +1446,152 @@ function isLoggedIn() {
   return sessionStorage.getItem(K.session) === a.hash || localStorage.getItem(K.session) === a.hash;
 }
 
+function norm(s){ return s.trim().toLowerCase(); }
+
 function showLock() {
   const a = getAuth();
   authMode = a ? 'login' : 'setup';
-  document.getElementById('lock-title').textContent = a ? 'Accès restreint' : 'Création du compte';
-  document.getElementById('lock-sub').textContent = a ? 'Authentification requise' : 'Définissez vos identifiants';
-  document.getElementById('lock-btn').textContent = a ? 'Se connecter' : 'Créer mon accès';
-  document.getElementById('lock-confirm-wrap').style.display = a ? 'none' : 'block';
+  applyLockMode();
   document.getElementById('lock').classList.remove('gone');
   startLockNet();
-  setTimeout(() => document.getElementById('lock-user').focus(), 300);
+  // bouton biométrie si activée + supportée
+  maybeShowBioButton();
+  setTimeout(() => document.getElementById(authMode === 'setup' ? 'lock-user' : 'lock-pass').focus(), 300);
+}
+
+function applyLockMode() {
+  const a = getAuth();
+  const $ = id => document.getElementById(id);
+  const setup = authMode === 'setup';
+  const recoverVerify = authMode === 'recover-verify';
+  const recoverSet = authMode === 'recover-set';
+  $('lock-err').textContent = '';
+
+  // titres
+  const titles = {
+    setup:['Création du compte','Définissez vos identifiants','Créer mon accès'],
+    login:['Accès restreint','Authentification requise','Se connecter'],
+    'recover-verify':['Récupération','Répondez à votre question secrète','Vérifier'],
+    'recover-set':['Nouveau mot de passe','Définissez un nouveau mot de passe','Enregistrer']
+  };
+  const [t,s,b] = titles[authMode];
+  $('lock-title').textContent = t;
+  $('lock-sub').textContent = s;
+  $('lock-btn').textContent = b;
+
+  // champs
+  $('lock-user').parentElement.style.display = (recoverVerify || recoverSet) ? 'none' : 'block';
+  $('lock-pass').parentElement.style.display = recoverVerify ? 'none' : 'block';
+  $('lock-pass').parentElement.querySelector('label').textContent = recoverSet ? 'Nouveau mot de passe' : 'Mot de passe';
+  $('lock-confirm-wrap').style.display = (setup || recoverSet) ? 'block' : 'none';
+  $('lock-recovery-wrap').style.display = (setup || recoverVerify) ? 'block' : 'none';
+
+  // en récupération : question en lecture seule
+  if (recoverVerify && a) {
+    $('lock-question').value = a.question || '';
+    $('lock-question').readOnly = true;
+    $('lock-question').parentElement.querySelector('label').textContent = 'Question secrète';
+    $('lock-answer').value = '';
+  } else {
+    $('lock-question').readOnly = false;
+  }
+
+  // visibilité liens
+  $('lock-forgot').style.display = (authMode === 'login') ? 'block' : 'none';
+  $('lock-remember-wrap').style.display = (recoverVerify || recoverSet) ? 'none' : 'flex';
 }
 
 async function lockSubmit() {
-  const user = document.getElementById('lock-user').value.trim();
-  const pass = document.getElementById('lock-pass').value;
-  const err  = document.getElementById('lock-err');
+  const $ = id => document.getElementById(id);
+  const err = $('lock-err');
   err.textContent = '';
 
-  if (!user || !pass) { err.textContent = 'Champs requis'; shake('lock-pass'); return; }
-
+  /* ── Création de compte ── */
   if (authMode === 'setup') {
-    const pass2 = document.getElementById('lock-pass2').value;
+    const user = $('lock-user').value.trim();
+    const pass = $('lock-pass').value;
+    const pass2 = $('lock-pass2').value;
+    const question = $('lock-question').value.trim();
+    const answer = $('lock-answer').value.trim();
+    if (!user || !pass) { err.textContent = 'Identifiant et mot de passe requis'; shake('lock-pass'); return; }
     if (pass.length < 4) { err.textContent = 'Mot de passe : 4 caractères minimum'; shake('lock-pass'); return; }
-    if (pass !== pass2)  { err.textContent = 'Les mots de passe ne correspondent pas'; shake('lock-pass2'); return; }
-    const hash = await sha256(user.toLowerCase() + '::' + pass);
-    localStorage.setItem(K.auth, JSON.stringify({ user, hash }));
+    if (pass !== pass2) { err.textContent = 'Les mots de passe ne correspondent pas'; shake('lock-pass2'); return; }
+    if (!question || !answer) { err.textContent = 'Question secrète requise (pour la récupération)'; shake('lock-answer'); return; }
+    const hash = await sha256(norm(user) + '::' + pass);
+    const ansHash = await sha256(norm(answer));
+    localStorage.setItem(K.auth, JSON.stringify({ user, hash, question, ansHash }));
     grantSession(hash);
     unlock();
     toast('Compte créé · Bienvenue ' + user + ' ✓');
-  } else {
+    return;
+  }
+
+  /* ── Connexion ── */
+  if (authMode === 'login') {
+    const user = $('lock-user').value.trim();
+    const pass = $('lock-pass').value;
+    if (!user || !pass) { err.textContent = 'Champs requis'; shake('lock-pass'); return; }
     const a = getAuth();
-    const hash = await sha256(user.toLowerCase() + '::' + pass);
-    if (a && user.toLowerCase() === a.user.toLowerCase() && hash === a.hash) {
+    const hash = await sha256(norm(user) + '::' + pass);
+    if (a && norm(user) === norm(a.user) && hash === a.hash) {
       grantSession(hash);
       unlock();
       toast('Accès autorisé ✓');
     } else {
       err.textContent = 'Identifiant ou mot de passe incorrect';
       shake('lock-pass');
-      document.getElementById('lock-pass').value = '';
+      $('lock-pass').value = '';
+    }
+    return;
+  }
+
+  /* ── Récupération : vérifier la réponse ── */
+  if (authMode === 'recover-verify') {
+    const a = getAuth();
+    const answer = $('lock-answer').value.trim();
+    if (!answer) { err.textContent = 'Saisissez votre réponse'; shake('lock-answer'); return; }
+    const ansHash = await sha256(norm(answer));
+    if (a && ansHash === a.ansHash) {
+      authMode = 'recover-set';
+      applyLockMode();
+      setTimeout(() => $('lock-pass').focus(), 100);
+      toast('Réponse correcte · choisissez un nouveau mot de passe ✓');
+    } else {
+      err.textContent = 'Réponse incorrecte';
+      shake('lock-answer');
+    }
+    return;
+  }
+
+  /* ── Récupération : définir le nouveau mot de passe ── */
+  if (authMode === 'recover-set') {
+    const a = getAuth();
+    const pass = $('lock-pass').value;
+    const pass2 = $('lock-pass2').value;
+    if (pass.length < 4) { err.textContent = 'Mot de passe : 4 caractères minimum'; shake('lock-pass'); return; }
+    if (pass !== pass2) { err.textContent = 'Les mots de passe ne correspondent pas'; shake('lock-pass2'); return; }
+    const hash = await sha256(norm(a.user) + '::' + pass);
+    a.hash = hash;
+    localStorage.setItem(K.auth, JSON.stringify(a));
+    grantSession(hash);
+    unlock();
+    toast('Mot de passe réinitialisé ✓');
+    return;
+  }
+}
+
+function forgotPassword() {
+  const a = getAuth();
+  if (!a) return;
+  if (a.question && a.ansHash) {
+    authMode = 'recover-verify';
+    applyLockMode();
+    document.getElementById('lock-bio-btn').style.display = 'none';
+    setTimeout(() => document.getElementById('lock-answer').focus(), 100);
+  } else {
+    // ancien compte sans question : proposer une réinitialisation complète des identifiants
+    if (confirm('Aucune question secrète n\'a été définie pour ce compte.\n\nRéinitialiser les identifiants ? Vos données (routines, agenda, scores) seront conservées.')) {
+      resetPassword();
     }
   }
 }
@@ -1469,8 +1604,7 @@ function grantSession(hash) {
 
 function unlock() {
   document.getElementById('lock').classList.add('gone');
-  document.getElementById('lock-pass').value = '';
-  document.getElementById('lock-pass2').value = '';
+  ['lock-pass','lock-pass2','lock-answer'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
   stopLockNet();
 }
 
@@ -1485,6 +1619,99 @@ function resetPassword() {
   sessionStorage.removeItem(K.session);
   localStorage.removeItem(K.session);
   location.reload();
+}
+
+/* ══════════ BIOMÉTRIE / FACE ID (WebAuthn) ══════════ */
+function b64uToBuf(s){ s = s.replace(/-/g,'+').replace(/_/g,'/'); const pad = s.length % 4 ? '='.repeat(4 - s.length%4) : ''; const bin = atob(s + pad); const buf = new Uint8Array(bin.length); for (let i=0;i<bin.length;i++) buf[i]=bin.charCodeAt(i); return buf.buffer; }
+function bufToB64u(buf){ const b = new Uint8Array(buf); let s = ''; for (let i=0;i<b.length;i++) s += String.fromCharCode(b[i]); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+
+async function bioSupported() {
+  if (!window.PublicKeyCredential || !navigator.credentials) return false;
+  try { return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable(); }
+  catch { return false; }
+}
+
+async function maybeShowBioButton() {
+  const a = getAuth();
+  const btn = document.getElementById('lock-bio-btn');
+  if (a && a.bioId && authMode === 'login' && await bioSupported()) {
+    btn.style.display = 'flex';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+async function enableBio() {
+  const a = getAuth();
+  if (!a) { toast('Connectez-vous d\'abord', true); return; }
+  if (!(await bioSupported())) { toast('Face ID / empreinte non disponible ici', true); return; }
+  try {
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const userId = crypto.getRandomValues(new Uint8Array(16));
+    const cred = await navigator.credentials.create({ publicKey: {
+      challenge,
+      rp: { name: 'Lumos' },
+      user: { id: userId, name: a.user, displayName: a.user },
+      pubKeyCredParams: [{ type:'public-key', alg:-7 }, { type:'public-key', alg:-257 }],
+      authenticatorSelection: { authenticatorAttachment:'platform', userVerification:'required' },
+      timeout: 60000
+    }});
+    a.bioId = bufToB64u(cred.rawId);
+    localStorage.setItem(K.auth, JSON.stringify(a));
+    updateBioUI();
+    toast('Face ID activé ✓');
+  } catch (e) {
+    toast('Activation annulée', true);
+  }
+}
+
+function disableBio() {
+  const a = getAuth();
+  if (!a) return;
+  delete a.bioId;
+  localStorage.setItem(K.auth, JSON.stringify(a));
+  updateBioUI();
+  toast('Face ID désactivé');
+}
+
+async function bioUnlock() {
+  const a = getAuth();
+  if (!a || !a.bioId) return;
+  try {
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    await navigator.credentials.get({ publicKey: {
+      challenge,
+      allowCredentials: [{ id: b64uToBuf(a.bioId), type:'public-key' }],
+      userVerification: 'required',
+      timeout: 60000
+    }});
+    grantSession(a.hash);
+    unlock();
+    toast('Accès autorisé · Face ID ✓');
+  } catch (e) {
+    document.getElementById('lock-err').textContent = 'Échec biométrique — utilisez votre mot de passe';
+  }
+}
+
+async function updateBioUI() {
+  const a = getAuth();
+  const row = document.getElementById('bio-row');
+  const btn = document.getElementById('bio-btn');
+  const sub = document.getElementById('bio-sub');
+  if (!row) return;
+  const supported = await bioSupported();
+  if (!supported) {
+    row.style.display = 'flex';
+    btn.style.display = 'none';
+    sub.textContent = 'Non disponible sur cet appareil / navigateur';
+    return;
+  }
+  row.style.display = 'flex';
+  const on = a && a.bioId;
+  btn.textContent = on ? 'Désactiver' : 'Activer';
+  btn.className = 'btn btn-sm ' + (on ? 'btn-danger' : 'btn-solid');
+  btn.onclick = on ? disableBio : enableBio;
+  sub.textContent = on ? 'Déverrouillage biométrique activé' : 'Déverrouillez avec Face ID ou empreinte';
 }
 
 /* réseau animé du lock screen */
@@ -1555,8 +1782,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // après le splash : login si nécessaire
   setTimeout(() => { if (!isLoggedIn()) showLock(); }, 3300);
   // Enter dans les champs du lock
-  ['lock-user','lock-pass','lock-pass2'].forEach(id =>
+  ['lock-user','lock-pass','lock-pass2','lock-answer'].forEach(id =>
     document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') lockSubmit(); }));
+  updateBioUI();
   initTheme();
   initClock();
   initTabs();
