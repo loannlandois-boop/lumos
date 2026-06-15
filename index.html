@@ -546,6 +546,27 @@ button{cursor:pointer;font-family:var(--fb)}
   background:rgba(56,189,248,.1);border:1px solid var(--line);
   padding:2px 8px;border-radius:4px;letter-spacing:.08em;
 }
+.rpts{
+  font-family:var(--fd);font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:4px;letter-spacing:.06em;
+  border:1px solid transparent;min-width:34px;text-align:center;
+}
+.rpts.won{color:var(--success);background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.3)}
+.rpts.lost{color:var(--dim);background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.22)}
+/* moyennes */
+.avg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:8px}
+.avg-card{text-align:center;padding:22px 14px}
+.avg-num{
+  font-family:var(--fd);font-size:32px;font-weight:900;color:var(--cyan-2);
+  line-height:1;text-shadow:0 0 18px rgba(56,189,248,.4);
+}
+[data-theme="light"] .avg-num{color:var(--cyan);text-shadow:none}
+.avg-lbl{
+  font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.18em;
+  color:var(--ice);text-transform:uppercase;margin-top:10px;
+}
+.avg-sub{font-size:10px;color:var(--dim);margin-top:3px;letter-spacing:.04em}
+@media(max-width:560px){.avg-grid{grid-template-columns:1fr}}
 .rdel{
   background:none;border:none;color:var(--dim-2);font-size:18px;
   opacity:0;transition:opacity var(--t),color var(--t);line-height:1;
@@ -1220,6 +1241,25 @@ button{cursor:pointer;font-family:var(--fb)}
         </div>
       </div>
 
+      <div class="sec-h">Moyennes</div>
+      <div class="avg-grid">
+        <div class="avg-card panel corners">
+          <div class="avg-num" id="avg-week">0%</div>
+          <div class="avg-lbl">Hebdomadaire</div>
+          <div class="avg-sub">7 derniers jours</div>
+        </div>
+        <div class="avg-card panel corners">
+          <div class="avg-num" id="avg-month">0%</div>
+          <div class="avg-lbl">Mensuelle</div>
+          <div class="avg-sub">30 derniers jours</div>
+        </div>
+        <div class="avg-card panel corners">
+          <div class="avg-num" id="avg-year">0%</div>
+          <div class="avg-lbl">Annuelle</div>
+          <div class="avg-sub">365 derniers jours</div>
+        </div>
+      </div>
+
       <div class="sec-h">Analyse hebdomadaire</div>
       <div class="panel" style="padding:26px 18px 16px">
         <div class="week-chart" id="week-chart"></div>
@@ -1365,6 +1405,10 @@ button{cursor:pointer;font-family:var(--fb)}
     <div class="fg">
       <label for="r-time">Heure (optionnel)</label>
       <input type="time" id="r-time">
+    </div>
+    <div class="fg">
+      <label for="r-points">Points · importance (1 à 50)</label>
+      <input type="number" id="r-points" min="1" max="50" step="1" value="10" placeholder="10">
     </div>
     <input type="hidden" id="r-period">
     <button class="btn btn-solid" onclick="saveRoutine()" style="width:100%;justify-content:center;margin-top:6px">Ajouter</button>
@@ -2016,6 +2060,7 @@ function renderRoutines() {
             aria-label="${escH(r.label)}" onchange="toggleR('${r.id}',this.checked)">
           <span class="rl-text">${escH(r.label)}</span>
           ${r.time ? `<span class="rtime">${r.time}</span>` : ''}
+          <span class="rpts ${r.checked?'won':'lost'}" title="${r.checked?'Points gagnés':'Points en jeu'}">${r.checked?'+':'−'}${r.points||10}</span>
           <button class="rdel" onclick="deleteR(event,'${r.id}')" aria-label="Supprimer">×</button>
         </div>`).join('');
     cont.style.maxHeight = cont.scrollHeight + 'px';
@@ -2028,10 +2073,11 @@ function renderRoutines() {
 
 function updateProgress() {
   const rs = getRs();
-  const done = rs.filter(r => r.checked).length;
-  const pct = rs.length ? Math.round(done/rs.length*100) : 0;
+  const totalPts = rs.reduce((s,r) => s + (r.points||10), 0);
+  const wonPts   = rs.filter(r => r.checked).reduce((s,r) => s + (r.points||10), 0);
+  const pct = totalPts ? Math.round(wonPts/totalPts*100) : 0;
   document.getElementById('rm-bar').style.width = pct + '%';
-  document.getElementById('rm-label').textContent = `${done} / ${rs.length} · ${pct}%`;
+  document.getElementById('rm-label').textContent = `${wonPts} / ${totalPts} pts · ${pct}%`;
 }
 
 function toggleR(id, checked) {
@@ -2056,6 +2102,7 @@ function openAddRoutine(period) {
     period === 'matin' ? 'Routine · Matin' : 'Routine · Soir';
   document.getElementById('r-label').value = '';
   document.getElementById('r-time').value = '';
+  document.getElementById('r-points').value = '10';
   document.getElementById('r-period').value = period;
   openModal('modal-routine');
   setTimeout(() => document.getElementById('r-label').focus(), 240);
@@ -2064,9 +2111,12 @@ function openAddRoutine(period) {
 function saveRoutine() {
   const label = document.getElementById('r-label').value.trim();
   if (!label) { shake('r-label'); return; }
+  let points = parseInt(document.getElementById('r-points').value, 10);
+  if (isNaN(points) || points < 1) points = 10;
+  if (points > 50) points = 50;
   const rs = getRs();
   rs.push({ id: uid(), label, time: document.getElementById('r-time').value,
-    period: document.getElementById('r-period').value, checked: false, date: todayISO() });
+    period: document.getElementById('r-period').value, points, checked: false, date: todayISO() });
   setRs(rs);
   closeModal('modal-routine');
   renderRoutines();
@@ -2215,18 +2265,39 @@ function initColorSwatches() {
   });
 }
 
-/* ── SCORE ── */
+/* ── SCORE (pondéré par points) ── */
 function computeScore() {
   const rs = getRs();
   if (!rs.length) return 0;
   const t = todayISO();
-  return Math.round(rs.filter(r => r.checked && r.date === t).length / rs.length * 100);
+  const total = rs.reduce((s,r) => s + (r.points||10), 0);
+  const won = rs.filter(r => r.checked && r.date === t).reduce((s,r) => s + (r.points||10), 0);
+  return total ? Math.round(won/total*100) : 0;
 }
 function computeCatScore(p) {
   const rs = getRs().filter(r => r.period === p);
   if (!rs.length) return 0;
   const t = todayISO();
-  return Math.round(rs.filter(r => r.checked && r.date === t).length / rs.length * 100);
+  const total = rs.reduce((s,r) => s + (r.points||10), 0);
+  const won = rs.filter(r => r.checked && r.date === t).reduce((s,r) => s + (r.points||10), 0);
+  return total ? Math.round(won/total*100) : 0;
+}
+function todayPoints() {
+  const rs = getRs(); const t = todayISO();
+  const total = rs.reduce((s,r) => s + (r.points||10), 0);
+  const won = rs.filter(r => r.checked && r.date === t).reduce((s,r) => s + (r.points||10), 0);
+  return { won, total };
+}
+/* moyennes sur N jours glissants à partir du store de scores */
+function averageOver(days) {
+  const scores = JSON.parse(localStorage.getItem(K.scores) || '{}');
+  let sum = 0, n = 0;
+  for (let i = 0; i < days; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const iso = d.toISOString().slice(0,10);
+    if (scores[iso] !== undefined) { sum += scores[iso]; n++; }
+  }
+  return n ? Math.round(sum/n) : 0;
 }
 function saveScoreToday() {
   const s = JSON.parse(localStorage.getItem(K.scores) || '{}');
@@ -2248,14 +2319,18 @@ function animateScore() {
 
   const rs = getRs();
   const done = rs.filter(r => r.checked).length;
+  const pts = todayPoints();
   document.getElementById('score-detail').textContent =
-    rs.length ? `${done} sur ${rs.length} routine${rs.length>1?'s':''} validée${done>1?'s':''}` : 'Aucune routine configurée';
+    rs.length ? `${done}/${rs.length} routines · ${pts.won} / ${pts.total} points` : 'Aucune routine configurée';
 
   ['matin','soir'].forEach(p => {
     const s = computeCatScore(p);
     document.getElementById(`cat-${p}`).style.width = s + '%';
     document.getElementById(`pct-${p}`).textContent = s + '%';
   });
+
+  // Moyennes hebdo / mensuelle / annuelle
+  renderAverages();
 
   const MNS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const n = new Date();
@@ -2264,6 +2339,14 @@ function animateScore() {
   renderWeekChart();
   renderHistoryDots();
   if (score === 100) setTimeout(confetti, 600);
+}
+
+function renderAverages() {
+  const defs = [['avg-week',7],['avg-month',30],['avg-year',365]];
+  defs.forEach(([id,days]) => {
+    const el = document.getElementById(id);
+    if (el) countUp(el, 0, averageOver(days), 900, v => v + '%');
+  });
 }
 
 function renderWeekChart() {
