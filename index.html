@@ -755,6 +755,32 @@ button{cursor:pointer;font-family:var(--fb)}
 .focus-btns{display:flex;gap:10px}
 .focus-today{margin-top:16px;font-family:var(--fd);font-size:10px;letter-spacing:.1em;color:var(--cyan-2);text-transform:uppercase}
 @media(max-width:600px){.eisen-grid{grid-template-columns:1fr}}
+
+/* ══════════ TABLEAU DE BORD / ACCUEIL ══════════ */
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.dash-stat{padding:18px 16px;text-align:center;cursor:pointer;transition:transform var(--t),box-shadow var(--t),border-color var(--t)}
+.dash-stat:hover{transform:translateY(-3px);border-color:var(--cyan);box-shadow:0 0 22px rgba(56,189,248,.15)}
+.dash-stat-num{font-family:var(--fd);font-size:30px;font-weight:900;color:var(--cyan-2);line-height:1;text-shadow:0 0 16px rgba(56,189,248,.4)}
+[data-theme="light"] .dash-stat-num{color:var(--cyan);text-shadow:none}
+.dash-stat-num small{font-size:13px;font-weight:500;color:var(--dim);margin-left:3px}
+.dash-stat-lbl{font-family:var(--fd);font-size:9px;font-weight:500;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:9px}
+.dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.dash-col{display:flex;flex-direction:column;gap:14px}
+.dash-card{padding:18px 20px}
+.dash-card-h{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--ice);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dash-link{background:none;border:none;font-family:var(--fd);font-size:9px;letter-spacing:.1em;color:var(--cyan);text-transform:uppercase;cursor:pointer;transition:color var(--t)}
+.dash-link:hover{color:var(--cyan-2);text-shadow:var(--glow-sm)}
+.dash-mini-lbl{font-family:var(--fd);font-size:10px;letter-spacing:.12em;color:var(--cyan-2);text-transform:uppercase}
+.dash-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid var(--line)}
+.dash-row:first-child{border-top:none}
+.dash-row-num{font-family:var(--fd);font-size:13px;font-weight:900;color:#FBBF24;width:18px;flex-shrink:0}
+.dash-row-t{flex:1;font-size:13px;color:var(--ice);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dash-row-t.done{text-decoration:line-through;color:var(--dim-2)}
+.dash-row-tag{font-family:var(--fd);font-size:9px;color:var(--cyan-2);background:rgba(56,189,248,.1);border:1px solid var(--line);border-radius:3px;padding:1px 7px;white-space:nowrap}
+.dash-row-kval{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--cyan-2);white-space:nowrap}
+.dash-empty{color:var(--dim-2);font-size:12.5px;font-style:italic;padding:4px 0}
+.dash-quote{padding:18px 24px;text-align:center;font-family:var(--fd);font-size:16px;font-style:italic;color:var(--cyan-2);letter-spacing:.02em}
+@media(max-width:900px){.dash-stats{grid-template-columns:1fr 1fr}.dash-cols{grid-template-columns:1fr}}
 .rdel{
   background:none;border:none;color:var(--dim-2);font-size:18px;
   opacity:0;transition:opacity var(--t),color var(--t);line-height:1;
@@ -1249,7 +1275,11 @@ button{cursor:pointer;font-family:var(--fb)}
     </div>
 
     <nav role="navigation" aria-label="Navigation">
-      <button class="nav-item active" data-tab="routines" aria-selected="true">
+      <button class="nav-item active" data-tab="home" aria-selected="true">
+        <span class="ni"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
+        Accueil
+      </button>
+      <button class="nav-item" data-tab="routines" aria-selected="false">
         <span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.2 2.2M16.9 16.9l2.2 2.2M19.1 4.9l-2.2 2.2M7.1 16.9l-2.2 2.2"/></svg></span>
         Routines<span class="nav-badge" id="badge-routines"></span>
       </button>
@@ -1298,8 +1328,67 @@ button{cursor:pointer;font-family:var(--fb)}
 
   <main id="main">
 
+    <!-- ━━━ ACCUEIL / TABLEAU DE BORD ━━━ -->
+    <section id="tab-home" class="tab-panel active" role="tabpanel">
+      <div class="page-header">
+        <div class="page-eyebrow" id="home-eyebrow">Tableau de bord</div>
+        <h1 class="page-title" id="home-greeting">Bonjour</h1>
+        <p class="page-sub" id="home-sub"></p>
+      </div>
+
+      <!-- Bandeau de statistiques -->
+      <div class="dash-stats">
+        <div class="dash-stat panel corners" onclick="switchTab('score')" role="button" tabindex="0">
+          <div class="dash-stat-num" id="d-score">0%</div>
+          <div class="dash-stat-lbl">Score du jour</div>
+        </div>
+        <div class="dash-stat panel corners" onclick="openFocus()" role="button" tabindex="0">
+          <div class="dash-stat-num" id="d-focus">0<small>min</small></div>
+          <div class="dash-stat-lbl">Focus aujourd'hui</div>
+        </div>
+        <div class="dash-stat panel corners" onclick="switchTab('priorites')" role="button" tabindex="0">
+          <div class="dash-stat-num" id="d-urgent">0</div>
+          <div class="dash-stat-lbl">À faire maintenant</div>
+        </div>
+        <div class="dash-stat panel corners" onclick="switchTab('journal')" role="button" tabindex="0">
+          <div class="dash-stat-num" id="d-prod">–</div>
+          <div class="dash-stat-lbl">Prod. moy. /10</div>
+        </div>
+      </div>
+
+      <div class="dash-cols">
+        <!-- Colonne gauche -->
+        <div class="dash-col">
+          <div class="dash-card panel corners">
+            <div class="dash-card-h">★ Top 3 du jour <button class="dash-link" onclick="switchTab('priorites')">Gérer →</button></div>
+            <div id="d-mit"></div>
+          </div>
+          <div class="dash-card panel corners">
+            <div class="dash-card-h">☀ Routines du jour <button class="dash-link" onclick="switchTab('routines')">Voir →</button></div>
+            <div class="rm-progress-wrap" style="margin-bottom:8px"><div class="rm-progress-bar" id="d-routine-bar"></div></div>
+            <div class="dash-mini-lbl" id="d-routine-lbl">0 / 0</div>
+          </div>
+        </div>
+
+        <!-- Colonne droite -->
+        <div class="dash-col">
+          <div class="dash-card panel corners">
+            <div class="dash-card-h">📅 Aujourd'hui <button class="dash-link" onclick="switchTab('agenda')">Agenda →</button></div>
+            <div id="d-events"></div>
+          </div>
+          <div class="dash-card panel corners">
+            <div class="dash-card-h">📊 Indicateurs clés <button class="dash-link" onclick="switchTab('kpis')">KPIs →</button></div>
+            <div id="d-kpis"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Citation / focus du jour -->
+      <div class="dash-quote panel" id="dash-quote"></div>
+    </section>
+
     <!-- ━━━ ROUTINES ━━━ -->
-    <section id="tab-routines" class="tab-panel active" role="tabpanel">
+    <section id="tab-routines" class="tab-panel" role="tabpanel">
       <div class="page-header">
         <div class="page-eyebrow">Module · Habitudes quotidiennes</div>
         <h1 class="page-title" id="pg-greeting">Mes Routines</h1>
@@ -1722,7 +1811,8 @@ button{cursor:pointer;font-family:var(--fb)}
 
   <div id="bottom-nav">
     <nav>
-      <button class="nav-item active" data-tab="routines" aria-selected="true"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span>Routines</button>
+      <button class="nav-item active" data-tab="home" aria-selected="true"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>Accueil</button>
+      <button class="nav-item" data-tab="routines" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span>Routines</button>
       <button class="nav-item" data-tab="agenda" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</button>
       <button class="nav-item" data-tab="emails" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 8l9 6 9-6"/></svg></span>Emails</button>
       <button class="nav-item" data-tab="score" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>Score</button>
@@ -2235,6 +2325,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateSidebarUser();
   bindEnterKeys();
   startBgNet();
+  renderHome();
 });
 
 /* ══════════ SPLASH ANIMÉ ══════════ */
@@ -2404,6 +2495,7 @@ function switchTab(id) {
   if (id === 'priorites') renderTasks();
   if (id === 'objectifs') renderGoals();
   if (id === 'kpis') renderKpis();
+  if (id === 'home') renderHome();
 }
 
 /* ── NAME ── */
@@ -2926,6 +3018,71 @@ function renderJournalHistory() {
   }).join('');
 }
 function openJournalDay(iso){ jDate = iso; renderJournal(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* ══════════ TABLEAU DE BORD / ACCUEIL ══════════ */
+const QUOTES = [
+  "« Ce qui est important est rarement urgent, et ce qui est urgent rarement important. » — Eisenhower",
+  "« La productivité, c'est faire les bonnes choses, pas plus de choses. »",
+  "« Concentrez-vous sur l'essentiel, déléguez le reste. »",
+  "« Une journée bien planifiée est une journée à moitié gagnée. »",
+  "« Le succès, c'est la somme de petits efforts répétés jour après jour. »",
+  "« Dites non plus souvent pour pouvoir dire oui à ce qui compte. »",
+  "« Ce qui se mesure s'améliore. »"
+];
+function renderHome() {
+  const name = localStorage.getItem(K.name) || (getAuth()?.user) || '';
+  const hr = new Date().getHours();
+  const grt = hr < 12 ? 'Bonjour' : hr < 18 ? 'Bon après-midi' : 'Bonsoir';
+  document.getElementById('home-greeting').textContent = name ? `${grt}, ${name}` : grt;
+  const DAYS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const MNS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const n = new Date();
+  document.getElementById('home-sub').textContent = `${DAYS[n.getDay()]} ${n.getDate()} ${MNS[n.getMonth()]} ${n.getFullYear()}`;
+
+  // Stats
+  const score = computeScore();
+  countUp(document.getElementById('d-score'), 0, score, 700, v => v + '%');
+  document.getElementById('d-focus').innerHTML = (getFocus()[todayISO()] || 0) + '<small>min</small>';
+  document.getElementById('d-urgent').textContent = getTasks().filter(t => !t.done && t.important && t.urgent).length;
+  const pw = journalAvg(7);
+  document.getElementById('d-prod').textContent = pw !== null ? pw.toFixed(1) : '–';
+
+  // Top 3
+  const mit = getTasks().filter(t => t.star).slice(0,3);
+  const dm = document.getElementById('d-mit');
+  dm.innerHTML = mit.length
+    ? mit.map((t,i) => `<div class="dash-row"><span class="dash-row-num">${i+1}</span><span class="dash-row-t ${t.done?'done':''}">${escH(t.title)}</span></div>`).join('')
+    : `<p class="dash-empty">Aucune priorité définie. Marquez vos tâches clés d'une étoile.</p>`;
+
+  // Routines
+  const rs = getRs();
+  const total = rs.reduce((s,r)=>s+(r.points||10),0);
+  const won = rs.filter(r=>r.checked).reduce((s,r)=>s+(r.points||10),0);
+  document.getElementById('d-routine-bar').style.width = (total?Math.round(won/total*100):0)+'%';
+  const done = rs.filter(r=>r.checked).length;
+  document.getElementById('d-routine-lbl').textContent = `${done} / ${rs.length} routines · ${won}/${total} pts`;
+
+  // Événements du jour
+  const evs = (getAgenda()[todayISO()]?.events || []).sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));
+  const de = document.getElementById('d-events');
+  de.innerHTML = evs.length
+    ? evs.slice(0,5).map(e => `<div class="dash-row">${e.time?`<span class="dash-row-tag">${e.time}</span>`:''}<span class="dash-row-t">${escH(e.title)}</span></div>`).join('')
+    : `<p class="dash-empty">Aucun rendez-vous aujourd'hui.</p>`;
+
+  // KPIs
+  const kpis = getKpis();
+  const dk = document.getElementById('d-kpis');
+  dk.innerHTML = kpis.length
+    ? kpis.slice(0,4).map(k => {
+        const last = k.values.length ? k.values[k.values.length-1].val : null;
+        return `<div class="dash-row"><span class="dash-row-t">${escH(k.name)}</span><span class="dash-row-kval">${last!==null?fmtNum(last)+' '+escH(k.unit):'–'}</span></div>`;
+      }).join('')
+    : `<p class="dash-empty">Aucun indicateur suivi.</p>`;
+
+  // Citation du jour (déterministe sur la date)
+  const di = (n.getFullYear()*1000 + (n.getMonth()*31+n.getDate())) % QUOTES.length;
+  document.getElementById('dash-quote').textContent = QUOTES[di];
+}
 
 /* ══════════ PRIORITÉS / TÂCHES ══════════ */
 function getTasks(){ return JSON.parse(localStorage.getItem(K.tasks) || '[]'); }
