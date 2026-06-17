@@ -567,6 +567,58 @@ button{cursor:pointer;font-family:var(--fb)}
 }
 .avg-sub{font-size:10px;color:var(--dim);margin-top:3px;letter-spacing:.04em}
 @media(max-width:560px){.avg-grid{grid-template-columns:1fr}}
+
+/* ══════════ DÉBRIEF / JOURNAL ══════════ */
+.j-section-lbl{
+  font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.16em;
+  color:var(--cyan);text-transform:uppercase;margin-bottom:16px;
+}
+.prod-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.prod-scale{display:flex;gap:6px;flex:1;min-width:220px}
+.prod-dot{
+  flex:1;height:34px;border-radius:6px;cursor:pointer;
+  background:rgba(56,189,248,.08);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fd);font-size:11px;color:var(--dim);
+  transition:all .15s;
+}
+.prod-dot:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.prod-dot.on{
+  background:linear-gradient(180deg,var(--cyan),#1E7FB8);color:#04121F;font-weight:700;
+  border-color:transparent;box-shadow:0 0 10px rgba(56,189,248,.5);
+}
+.prod-readout{display:flex;align-items:baseline;gap:4px}
+.prod-num{font-family:var(--fd);font-size:38px;font-weight:900;color:var(--cyan-2);text-shadow:0 0 16px rgba(56,189,248,.4)}
+[data-theme="light"] .prod-num{color:var(--cyan);text-shadow:none}
+.prod-max{font-family:var(--fd);font-size:14px;color:var(--dim)}
+.prod-mood{
+  margin-top:16px;font-family:var(--fd);font-size:11px;letter-spacing:.1em;
+  color:var(--cyan-2);text-transform:uppercase;min-height:14px;
+}
+.j-text{
+  width:100%;min-height:140px;resize:vertical;
+  padding:14px 16px;background:rgba(5,12,22,.6);
+  border:1px solid var(--line);border-radius:8px;
+  color:var(--ice);font-family:var(--fb);font-size:14px;line-height:1.6;
+  transition:border-color var(--t),box-shadow var(--t);
+}
+[data-theme="light"] .j-text{background:rgba(255,255,255,.7)}
+.j-text:focus{border-color:var(--cyan);outline:none;box-shadow:var(--glow-sm)}
+.j-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.j-saved{font-family:var(--fd);font-size:9px;letter-spacing:.14em;color:var(--success);text-transform:uppercase}
+.j-entry{
+  background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--cyan);
+  border-radius:8px;padding:14px 16px;margin-bottom:10px;animation:riIn .22s ease;
+}
+.j-entry-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.j-entry-date{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ice);text-transform:uppercase}
+.j-entry-score{
+  font-family:var(--fd);font-size:11px;font-weight:700;
+  color:var(--cyan-2);background:rgba(56,189,248,.12);
+  border:1px solid var(--line);border-radius:4px;padding:2px 9px;
+}
+.j-entry-text{font-size:13px;color:var(--dim);line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.j-empty{color:var(--dim-2);font-size:13px;font-style:italic;padding:10px 2px}
 .rdel{
   background:none;border:none;color:var(--dim-2);font-size:18px;
   opacity:0;transition:opacity var(--t),color var(--t);line-height:1;
@@ -1077,6 +1129,10 @@ button{cursor:pointer;font-family:var(--fb)}
         <span class="ni"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
         Score
       </button>
+      <button class="nav-item" data-tab="journal" aria-selected="false">
+        <span class="ni"><svg viewBox="0 0 24 24"><path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3V4z"/><path d="M4 4a3 3 0 013 3v13M9 9h7M9 13h7"/></svg></span>
+        Débrief
+      </button>
       <button class="nav-item" data-tab="settings" aria-selected="false">
         <span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
         Système
@@ -1269,6 +1325,68 @@ button{cursor:pointer;font-family:var(--fb)}
       <div class="hdots" id="hdots"></div>
     </section>
 
+    <!-- ━━━ DÉBRIEF / JOURNAL ━━━ -->
+    <section id="tab-journal" class="tab-panel" role="tabpanel">
+      <div class="page-header">
+        <div class="page-eyebrow">Module · Journal de bord</div>
+        <h1 class="page-title">Débrief du jour</h1>
+        <p class="page-sub">Notez votre productivité et consignez vos accomplissements.</p>
+      </div>
+
+      <!-- Navigation date -->
+      <div class="cal-nav" style="margin-bottom:18px">
+        <button class="cal-arr" onclick="jNav(-1)" aria-label="Jour précédent">‹</button>
+        <span class="cal-month" id="j-date" style="min-width:260px;font-size:15px"></span>
+        <button class="cal-arr" id="j-next" onclick="jNav(1)" aria-label="Jour suivant">›</button>
+        <button class="btn btn-sm btn-ghost" onclick="jToday()">Aujourd'hui</button>
+      </div>
+
+      <!-- Note productivité -->
+      <div class="panel corners" style="padding:24px 26px;margin-bottom:16px">
+        <div class="j-section-lbl">Niveau de productivité</div>
+        <div class="prod-row">
+          <div class="prod-scale" id="prod-scale"></div>
+          <div class="prod-readout">
+            <span class="prod-num" id="prod-num">–</span>
+            <span class="prod-max">/ 10</span>
+          </div>
+        </div>
+        <div class="prod-mood" id="prod-mood"></div>
+      </div>
+
+      <!-- Débrief texte -->
+      <div class="panel corners" style="padding:24px 26px;margin-bottom:16px">
+        <div class="j-section-lbl">Qu'avez-vous accompli aujourd'hui ?</div>
+        <textarea id="j-text" class="j-text" placeholder="• Tâches terminées&#10;• Points forts de la journée&#10;• Ce qui pourrait être amélioré…"></textarea>
+        <div class="j-actions">
+          <span class="j-saved" id="j-saved"></span>
+          <button class="btn btn-solid btn-sm" onclick="saveJournal()">Enregistrer le débrief</button>
+        </div>
+      </div>
+
+      <!-- Stats journal -->
+      <div class="avg-grid" style="margin-bottom:8px">
+        <div class="avg-card panel corners">
+          <div class="avg-num" id="javg-week">–</div>
+          <div class="avg-lbl">Prod. hebdo</div>
+          <div class="avg-sub">7 derniers jours</div>
+        </div>
+        <div class="avg-card panel corners">
+          <div class="avg-num" id="javg-month">–</div>
+          <div class="avg-lbl">Prod. mensuelle</div>
+          <div class="avg-sub">30 derniers jours</div>
+        </div>
+        <div class="avg-card panel corners">
+          <div class="avg-num" id="j-streak">0</div>
+          <div class="avg-lbl">Série</div>
+          <div class="avg-sub">jours consécutifs</div>
+        </div>
+      </div>
+
+      <div class="sec-h">Derniers débriefs</div>
+      <div id="j-history"></div>
+    </section>
+
     <!-- ━━━ SETTINGS ━━━ -->
     <section id="tab-settings" class="tab-panel" role="tabpanel">
       <div class="page-header">
@@ -1374,6 +1492,7 @@ button{cursor:pointer;font-family:var(--fb)}
       <button class="nav-item" data-tab="agenda" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</button>
       <button class="nav-item" data-tab="emails" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 8l9 6 9-6"/></svg></span>Emails</button>
       <button class="nav-item" data-tab="score" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>Score</button>
+      <button class="nav-item" data-tab="journal" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3V4z"/><path d="M9 9h7M9 13h7"/></svg></span>Débrief</button>
       <button class="nav-item" data-tab="settings" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.2 2.2M16.9 16.9l2.2 2.2M19.1 4.9l-2.2 2.2M7.1 16.9l-2.2 2.2"/></svg></span>Système</button>
     </nav>
   </div>
@@ -1460,12 +1579,14 @@ button{cursor:pointer;font-family:var(--fb)}
 const K = {
   routines:'lumos_routines', agenda:'lumos_agenda', scores:'lumos_scores',
   notify:'lumos_notify', name:'lumos_name', theme:'lumos_theme', net:'lumos_net',
-  auth:'lumos_auth', session:'lumos_session'
+  auth:'lumos_auth', session:'lumos_session', journal:'lumos_journal'
 };
 const EV_COLORS = ['#38BDF8','#9B7BF8','#4ADE80','#F87171','#FBBF24','#F472B6'];
 let selColor = EV_COLORS[0];
 let selDate = null;
 let calY, calM;
+let jDate = new Date().toISOString().slice(0,10); // jour affiché dans le débrief
+let jProd = 0;
 let netOn = true;
 
 /* ══════════ AUTH ══════════ */
@@ -2006,6 +2127,7 @@ function switchTab(id) {
   if (id === 'score') setTimeout(animateScore, 60);
   if (id === 'agenda') renderCalendar();
   if (id === 'routines') renderRoutines();
+  if (id === 'journal') renderJournal();
 }
 
 /* ── NAME ── */
@@ -2395,6 +2517,135 @@ function renderHistoryDots() {
     cont.appendChild(dot);
   }
 }
+
+/* ══════════ DÉBRIEF / JOURNAL ══════════ */
+function getJournal(){ return JSON.parse(localStorage.getItem(K.journal) || '{}'); }
+function setJournal(d){ localStorage.setItem(K.journal, JSON.stringify(d)); }
+
+const MOOD = [
+  [0,'—'],[1,'Journée difficile'],[3,'En dessous'],[5,'Correcte'],
+  [7,'Bonne journée'],[9,'Excellente journée'],[10,'Journée parfaite ✦']
+];
+function moodLabel(v){
+  if (!v) return 'Sélectionnez une note';
+  return MOOD.filter(([t]) => v >= t).pop()[1];
+}
+
+function buildProdScale() {
+  const sc = document.getElementById('prod-scale');
+  if (sc.children.length) return;
+  for (let i = 1; i <= 10; i++) {
+    const d = document.createElement('div');
+    d.className = 'prod-dot';
+    d.textContent = i;
+    d.setAttribute('role','button');
+    d.setAttribute('aria-label', `Note ${i} sur 10`);
+    d.onclick = () => setProd(i);
+    sc.appendChild(d);
+  }
+}
+function setProd(v) {
+  jProd = v;
+  document.querySelectorAll('#prod-scale .prod-dot').forEach((d,i) => d.classList.toggle('on', i < v));
+  document.getElementById('prod-num').textContent = v || '–';
+  document.getElementById('prod-mood').textContent = moodLabel(v);
+}
+
+function renderJournal() {
+  buildProdScale();
+  const j = getJournal()[jDate] || {};
+  jProd = j.prod || 0;
+  setProd(jProd);
+  document.getElementById('j-text').value = j.text || '';
+  document.getElementById('j-saved').textContent = j.text || j.prod ? 'Enregistré' : '';
+
+  // date label
+  const [y,m,d] = jDate.split('-').map(Number);
+  const DAYS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const MNS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const lbl = `${DAYS[new Date(y,m-1,d).getDay()]} ${d} ${MNS[m-1]} ${y}`;
+  document.getElementById('j-date').textContent = jDate === todayISO() ? `${lbl} · Aujourd'hui` : lbl;
+  // empêche d'aller dans le futur
+  document.getElementById('j-next').style.visibility = jDate >= todayISO() ? 'hidden' : 'visible';
+
+  renderJournalStats();
+  renderJournalHistory();
+}
+
+function jNav(dir) {
+  const d = new Date(jDate + 'T12:00:00');
+  d.setDate(d.getDate() + dir);
+  const iso = d.toISOString().slice(0,10);
+  if (iso > todayISO()) return; // pas de futur
+  jDate = iso;
+  renderJournal();
+}
+function jToday(){ jDate = todayISO(); renderJournal(); }
+
+function saveJournal() {
+  const text = document.getElementById('j-text').value.trim();
+  const j = getJournal();
+  if (!jProd && !text) { delete j[jDate]; }
+  else j[jDate] = { prod: jProd, text, ts: Date.now() };
+  setJournal(j);
+  document.getElementById('j-saved').textContent = 'Enregistré ✓';
+  renderJournalStats();
+  renderJournalHistory();
+  toast('Débrief enregistré ✓');
+}
+
+function journalAvg(days) {
+  const j = getJournal();
+  let sum = 0, n = 0;
+  for (let i = 0; i < days; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const e = j[d.toISOString().slice(0,10)];
+    if (e && e.prod) { sum += e.prod; n++; }
+  }
+  return n ? (sum/n) : null;
+}
+function journalStreak() {
+  const j = getJournal();
+  let streak = 0;
+  for (let i = 0; i < 366; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const e = j[d.toISOString().slice(0,10)];
+    if (e && (e.prod || e.text)) streak++;
+    else if (i === 0) continue; // aujourd'hui pas encore rempli → on tolère
+    else break;
+  }
+  return streak;
+}
+
+function renderJournalStats() {
+  const w = journalAvg(7), m = journalAvg(30);
+  document.getElementById('javg-week').textContent  = w !== null ? w.toFixed(1) : '–';
+  document.getElementById('javg-month').textContent = m !== null ? m.toFixed(1) : '–';
+  document.getElementById('j-streak').textContent   = journalStreak();
+}
+
+function renderJournalHistory() {
+  const j = getJournal();
+  const keys = Object.keys(j).sort().reverse().slice(0, 10);
+  const cont = document.getElementById('j-history');
+  const DAYS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const MNS = ['jan','fév','mars','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+  if (!keys.length) { cont.innerHTML = `<p class="j-empty">Aucun débrief enregistré pour l'instant.</p>`; return; }
+  cont.innerHTML = keys.map(iso => {
+    const e = j[iso];
+    const [y,mo,d] = iso.split('-').map(Number);
+    const dt = new Date(y,mo-1,d);
+    const dateLbl = `${DAYS[dt.getDay()]} ${d} ${MNS[mo-1]}`;
+    return `<div class="j-entry" onclick="openJournalDay('${iso}')" style="cursor:pointer">
+      <div class="j-entry-head">
+        <span class="j-entry-date">${dateLbl}</span>
+        ${e.prod ? `<span class="j-entry-score">${e.prod}/10</span>` : ''}
+      </div>
+      ${e.text ? `<div class="j-entry-text">${escH(e.text)}</div>` : '<div class="j-entry-text" style="font-style:italic;opacity:.6">Pas de note écrite</div>'}
+    </div>`;
+  }).join('');
+}
+function openJournalDay(iso){ jDate = iso; renderJournal(); window.scrollTo({top:0,behavior:'smooth'}); }
 
 /* ── EMAILS ── */
 const WEBMAIL_URLS = {
