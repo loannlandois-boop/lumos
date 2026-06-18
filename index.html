@@ -670,6 +670,15 @@ button{cursor:pointer;font-family:var(--fb)}
 .task:hover .task-del{opacity:1}
 .task-del:hover{color:var(--danger)}
 .q-empty{color:var(--dim-2);font-size:12px;font-style:italic;padding:6px 2px}
+.task[draggable="true"]{cursor:grab}
+.task.dragging{opacity:.45;cursor:grabbing;border-color:var(--cyan);box-shadow:var(--glow-sm)}
+.task-handle{color:var(--dim-2);font-size:13px;cursor:grab;flex-shrink:0;line-height:1;letter-spacing:-1px;touch-action:none;user-select:none}
+.task-handle:hover{color:var(--cyan)}
+.task-edit{background:none;border:none;color:var(--dim-2);font-size:13px;cursor:pointer;opacity:0;transition:opacity var(--t),color var(--t)}
+.task:hover .task-edit{opacity:1}
+.task-edit:hover{color:var(--cyan-2)}
+.eisen-q.dragover{border-color:var(--cyan);box-shadow:0 0 18px rgba(56,189,248,.2)}
+.eisen-q.dragover .eisen-h{color:var(--cyan-2)}
 .mit-item{display:flex;align-items:center;gap:10px;padding:8px 4px}
 .mit-num{font-family:var(--fd);font-size:16px;font-weight:900;color:#FBBF24;width:22px;text-align:center;flex-shrink:0}
 .mit-t{flex:1;font-size:14px;color:var(--ice)}
@@ -803,6 +812,25 @@ button{cursor:pointer;font-family:var(--fb)}
 .insight-txt{font-size:13px;color:var(--ice);line-height:1.5}
 .insight-txt b{color:var(--cyan-2);font-weight:600}
 .insight-sub{font-size:11.5px;color:var(--dim);margin-top:3px;line-height:1.45}
+
+/* ══════════ BRIEFING MATIN / SOIR ══════════ */
+.brief-icon{font-size:46px;text-align:center;margin-bottom:8px;line-height:1}
+.brief-quote{
+  font-family:var(--fd);font-size:21px;font-style:italic;font-weight:400;
+  color:var(--ice);text-align:center;line-height:1.45;margin:6px 0 4px;
+}
+.brief-author{font-family:var(--fd);font-size:10px;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase;text-align:center;margin-bottom:22px}
+.brief-block{
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;margin-bottom:12px;border-left:3px solid var(--cyan);
+}
+.brief-block.warn{border-left-color:#FBBF24}
+.brief-block-h{font-family:var(--fd);font-size:9.5px;font-weight:700;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.brief-mit-row{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:14px;color:var(--ice)}
+.brief-mit-row .n{font-family:var(--fd);font-weight:900;color:#FBBF24;width:18px}
+.brief-tip{font-size:13.5px;color:var(--ice);line-height:1.5}
+.brief-tip b{color:var(--cyan-2)}
+.brief-empty{font-size:13px;color:var(--dim);font-style:italic}
 .rdel{
   background:none;border:none;color:var(--dim-2);font-size:18px;
   opacity:0;transition:opacity var(--t),color var(--t);line-height:1;
@@ -1896,6 +1924,40 @@ button{cursor:pointer;font-family:var(--fb)}
   </div>
 </div>
 
+<!-- ═══════════ ÉDITION TÂCHE ═══════════ -->
+<div class="overlay" id="modal-task" role="dialog" aria-modal="true">
+  <div class="modal">
+    <button class="mclose" onclick="closeModal('modal-task')" aria-label="Fermer">✕</button>
+    <h2 class="modal-title">Modifier la tâche</h2>
+    <input type="hidden" id="te-id">
+    <div class="fg">
+      <label for="te-title">Intitulé *</label>
+      <input type="text" id="te-title" maxlength="120">
+    </div>
+    <div class="fg">
+      <label for="te-due">Échéance</label>
+      <input type="date" id="te-due">
+    </div>
+    <div class="fg">
+      <label for="te-who">Déléguer à</label>
+      <input type="text" id="te-who" maxlength="40" placeholder="Personne en charge (optionnel)">
+    </div>
+    <div class="fg" style="display:flex;gap:20px;align-items:center">
+      <label class="task-chk" style="margin:0"><input type="checkbox" id="te-urgent"> Urgent</label>
+      <label class="task-chk" style="margin:0"><input type="checkbox" id="te-important"> Important</label>
+    </div>
+    <button class="btn btn-solid" onclick="saveEditTask()" style="width:100%;justify-content:center;margin-top:6px">Enregistrer</button>
+  </div>
+</div>
+
+<!-- ═══════════ BRIEFING MATIN / SOIR ═══════════ -->
+<div class="overlay" id="modal-brief" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:460px">
+    <button class="mclose" onclick="closeModal('modal-brief')" aria-label="Fermer">✕</button>
+    <div id="brief-body"></div>
+  </div>
+</div>
+
 <!-- ═══════════ DAY PANEL ═══════════ -->
 <div id="day-panel" role="complementary" aria-label="Événements du jour">
   <div class="dp-header">
@@ -2170,6 +2232,7 @@ function unlock() {
   document.getElementById('lock').classList.add('gone');
   ['lock-pass','lock-pass2','lock-answer'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
   stopLockNet();
+  checkBriefing();
 }
 
 function logout() {
@@ -2344,10 +2407,15 @@ window.addEventListener('appinstalled', () => {
 document.addEventListener('DOMContentLoaded', () => {
   runSplash();
   // après le splash : login si nécessaire
-  setTimeout(() => { if (!isLoggedIn()) showLock(); }, 3300);
+  setTimeout(() => { if (!isLoggedIn()) showLock(); else checkBriefing(); }, 3300);
   // Enter dans les champs du lock
   ['lock-user','lock-pass','lock-pass2','lock-answer'].forEach(id =>
     document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') lockSubmit(); }));
+  // Enter pour ajouter / éditer une tâche
+  document.getElementById('t-title').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
+  document.getElementById('te-title').addEventListener('keydown', e => { if (e.key === 'Enter') saveEditTask(); });
+  document.getElementById('o-title').addEventListener('keydown', e => { if (e.key === 'Enter') addGoal(); });
+  document.getElementById('k-name').addEventListener('keydown', e => { if (e.key === 'Enter') addKpi(); });
   updateBioUI();
   initTheme();
   initClock();
@@ -3120,6 +3188,109 @@ function renderHome() {
   document.getElementById('dash-quote').textContent = QUOTES[di];
 }
 
+/* ══════════ BRIEFING MATIN / SOIR ══════════ */
+const MORNING_QUOTES = [
+  ["La discipline est le pont entre les objectifs et les accomplissements.","Jim Rohn"],
+  ["Le secret pour avancer, c'est de commencer.","Mark Twain"],
+  ["Ne comptez pas les jours, faites que les jours comptent.","Mohamed Ali"],
+  ["La meilleure façon de prédire l'avenir est de le créer.","Peter Drucker"],
+  ["Concentrez-vous sur l'essentiel, le reste suivra.","—"],
+  ["Chaque matin, vous avez deux choix : continuer à dormir avec vos rêves ou vous lever et les poursuivre.","—"],
+  ["La qualité n'est jamais un accident, c'est toujours le résultat d'un effort intelligent.","John Ruskin"],
+  ["Un objectif sans plan n'est qu'un souhait.","Antoine de Saint-Exupéry"],
+  ["Ce que vous faites aujourd'hui peut améliorer tous vos lendemains.","Ralph Marston"],
+  ["Agissez comme s'il était impossible d'échouer.","Winston Churchill"],
+  ["Le succès, c'est se promener d'échec en échec tout en restant motivé.","Winston Churchill"],
+  ["Faites de chaque journée votre chef-d'œuvre.","John Wooden"]
+];
+const EVENING_QUOTES = [
+  "Le vrai progrès, c'est de s'améliorer un peu chaque jour.",
+  "Une journée passée à réfléchir vaut mieux qu'une semaine à foncer aveuglément.",
+  "On ne gère bien que ce que l'on prend le temps d'évaluer.",
+  "La performance de demain se prépare dans la lucidité de ce soir.",
+  "Réussir, c'est tirer une leçon de chaque journée."
+];
+function briefKey(half){ return 'lumos_brief_' + half; }
+function pickByDate(arr){ const n=new Date(); return arr[(n.getFullYear()*1000 + n.getMonth()*31 + n.getDate()) % arr.length]; }
+
+/* Calcule l'axe d'amélioration prioritaire à partir des données du jour/semaine */
+function topImprovement() {
+  const tasks = getTasks().filter(t => !t.done);
+  const qDo = tasks.filter(t => t.important && t.urgent).length;
+  const qPlan = tasks.filter(t => t.important && !t.urgent).length;
+  const qDrop = tasks.filter(t => !t.important && !t.urgent).length;
+  const delegated = tasks.filter(t => t.who).length;
+  const overdue = tasks.filter(t => t.due && t.due < todayISO()).length;
+  const focusW = focusSum(0,7);
+  const score = computeScore();
+  const goals = getGoals();
+  const kpis = getKpis();
+  const kpiStale = kpis.filter(k => !k.values.length || k.values[k.values.length-1].date < (()=>{const d=new Date();d.setDate(d.getDate()-7);return d.toISOString().slice(0,10);})()).length;
+
+  if (overdue > 0) return `Vous avez <b>${overdue} tâche${overdue>1?'s':''} en retard</b>. Demain matin, traitez-les en premier ou décidez de les déléguer/abandonner.`;
+  if (qDo >= 4 && qDo > qPlan*2) return `Vous êtes en <b>mode pompier</b> (${qDo} urgences). Demain, bloquez 1h pour le travail important non urgent avant d'ouvrir vos mails.`;
+  if (tasks.length >= 6 && delegated === 0) return `Vous portez tout seul (<b>${tasks.length} tâches, 0 déléguée</b>). Identifiez-en au moins une à confier demain.`;
+  if (focusW < 90) return `Peu de <b>deep work</b> cette semaine (${focusW} min). Planifiez demain une session Focus de 90 min sans interruption.`;
+  if (qDrop >= 3) return `<b>${qDrop} tâches</b> ne sont ni urgentes ni importantes. Faites le ménage : éliminez ce qui n'a pas d'impact réel.`;
+  if (kpis.length && kpiStale) return `Vos indicateurs ne sont plus à jour. Prenez 2 min demain pour saisir vos <b>KPIs</b> et garder le cap.`;
+  if (!goals.length) return `Vous avancez sans <b>objectif stratégique</b> défini. Fixez-en un dès demain pour donner une direction à vos journées.`;
+  if (score < 50) return `Score du jour à ${score}%. Demain, concentrez-vous sur <b>3 priorités maximum</b> plutôt que de tout faire.`;
+  return `Belle journée. Pour aller plus loin : <b>protégez votre temps de concentration</b> et terminez chaque journée par ce débrief.`;
+}
+
+function showBriefing(half) {
+  const body = document.getElementById('brief-body');
+  const name = localStorage.getItem(K.name) || (getAuth()?.user) || '';
+  if (half === 'am') {
+    const [q,a] = pickByDate(MORNING_QUOTES);
+    const mit = getTasks().filter(t => t.star && !t.done).slice(0,3);
+    const mitHtml = mit.length
+      ? mit.map((t,i) => `<div class="brief-mit-row"><span class="n">${i+1}</span>${escH(t.title)}</div>`).join('')
+      : `<div class="brief-empty">Aucune priorité définie. Choisissez vos 3 tâches clés dans Priorités.</div>`;
+    body.innerHTML = `
+      <div class="brief-icon">☀️</div>
+      <div class="brief-quote">« ${q} »</div>
+      <div class="brief-author">${a}</div>
+      <div class="brief-block">
+        <div class="brief-block-h">★ Vos priorités du jour${name?` · ${escH(name)}`:''}</div>
+        ${mitHtml}
+      </div>
+      <button class="btn btn-solid" onclick="closeBrief('am')" style="width:100%;justify-content:center;margin-top:6px">C'est parti 🚀</button>`;
+  } else {
+    const q = pickByDate(EVENING_QUOTES);
+    const score = computeScore();
+    const done = getRs().filter(r => r.checked).length, tot = getRs().length;
+    const focusT = getFocus()[todayISO()] || 0;
+    body.innerHTML = `
+      <div class="brief-icon">🌙</div>
+      <div class="brief-quote">« ${q} »</div>
+      <div class="brief-author">Bilan du soir</div>
+      <div class="brief-block">
+        <div class="brief-block-h">📊 Votre journée</div>
+        <div class="brief-tip">Score : <b>${score}%</b> · Routines : <b>${done}/${tot}</b> · Focus : <b>${focusT} min</b></div>
+      </div>
+      <div class="brief-block warn">
+        <div class="brief-block-h">🎯 À améliorer pour demain</div>
+        <div class="brief-tip">${topImprovement()}</div>
+      </div>
+      <button class="btn btn-solid" onclick="closeBrief('pm');switchTab('journal')" style="width:100%;justify-content:center;margin-top:6px">Faire mon débrief</button>
+      <button class="btn btn-ghost" onclick="closeBrief('pm')" style="width:100%;justify-content:center;margin-top:8px">Bonne soirée</button>`;
+  }
+  openModal('modal-brief');
+}
+function closeBrief(half) {
+  localStorage.setItem(briefKey(half), todayISO());
+  closeModal('modal-brief');
+}
+function checkBriefing() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12 && localStorage.getItem(briefKey('am')) !== todayISO()) {
+    setTimeout(() => showBriefing('am'), 600);
+  } else if (h >= 18 && localStorage.getItem(briefKey('pm')) !== todayISO()) {
+    setTimeout(() => showBriefing('pm'), 600);
+  }
+}
+
 /* ══════════ RAPPORT HEBDOMADAIRE ══════════ */
 function focusSum(fromDaysAgo, toDaysAgo) {
   const f = getFocus(); let sum = 0;
@@ -3329,26 +3500,28 @@ function taskRow(t) {
   const late = t.due && t.due < todayISO() && !t.done;
   const dd = t.due ? `<span class="task-tag ${late?'late':''}">⏱ ${t.due.slice(5).replace('-','/')}</span>` : '';
   const who = t.who ? `<span class="task-tag who">→ ${escH(t.who)}</span>` : '';
-  return `<div class="task ${t.done?'done':''}" id="task-${t.id}">
+  return `<div class="task ${t.done?'done':''}" id="task-${t.id}" data-id="${t.id}" draggable="true">
+    <span class="task-handle" title="Glisser pour déplacer">⠿</span>
     <input type="checkbox" class="rcheck" ${t.done?'checked':''} onchange="toggleTask('${t.id}')" aria-label="Terminer">
     <div class="task-body">
       <div class="task-t">${escH(t.title)}</div>
       ${(dd||who)?`<div class="task-meta">${dd}${who}</div>`:''}
     </div>
     <button class="task-star ${t.star?'on':''}" onclick="starTask('${t.id}')" aria-label="Top 3" title="Marquer comme priorité du jour">★</button>
+    <button class="task-edit" onclick="openEditTask('${t.id}')" aria-label="Modifier" title="Modifier">✎</button>
     <button class="task-del" onclick="delTask('${t.id}')" aria-label="Supprimer">×</button>
   </div>`;
 }
 function renderTasks() {
   const tasks = getTasks();
   const groups = { do:[], plan:[], deleg:[], drop:[] };
-  tasks.forEach(t => groups[taskQuadrant(t)].push(t));
-  const sortFn = (a,b) => (a.done-b.done) || (b.created-a.created);
+  tasks.forEach(t => groups[taskQuadrant(t)].push(t)); // ordre manuel respecté (ordre du tableau)
   ['do','plan','deleg','drop'].forEach(q => {
     const el = document.getElementById('q-'+q);
-    const list = groups[q].sort(sortFn);
-    el.innerHTML = list.length ? list.map(taskRow).join('') : `<p class="q-empty">Aucune tâche.</p>`;
+    const list = groups[q];
+    el.innerHTML = list.length ? list.map(taskRow).join('') : `<p class="q-empty">Aucune tâche. Glissez-en une ici.</p>`;
   });
+  attachTaskDnD();
   // Top 3
   const mit = tasks.filter(t => t.star).slice(0,3);
   const ml = document.getElementById('mit-list');
@@ -3360,6 +3533,104 @@ function renderTasks() {
       </div>`).join('')
     : `<p class="mit-empty">Cliquez sur l'étoile ★ d'une tâche pour en faire une priorité du jour (max 3).</p>`;
   updateBadges();
+}
+
+/* ── Drag & drop des tâches ── */
+const QUAD_FLAGS = { do:[1,1], plan:[1,0], deleg:[0,1], drop:[0,0] };
+let draggedId = null;
+function attachTaskDnD() {
+  document.querySelectorAll('.task[draggable="true"]').forEach(el => {
+    el.addEventListener('dragstart', e => {
+      draggedId = el.dataset.id;
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', draggedId); } catch(_) {}
+    });
+    el.addEventListener('dragend', () => {
+      el.classList.remove('dragging');
+      document.querySelectorAll('.eisen-q.dragover').forEach(q => q.classList.remove('dragover'));
+      draggedId = null;
+    });
+  });
+  ['do','plan','deleg','drop'].forEach(q => {
+    const inner = document.getElementById('q-'+q);
+    const box = inner.closest('.eisen-q');
+    inner.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      box.classList.add('dragover');
+    });
+    box.addEventListener('dragleave', e => {
+      if (!box.contains(e.relatedTarget)) box.classList.remove('dragover');
+    });
+    inner.addEventListener('drop', e => {
+      e.preventDefault();
+      box.classList.remove('dragover');
+      dropTask(q, e.clientY);
+    });
+  });
+}
+function dragAfter(container, y) {
+  const els = [...container.querySelectorAll('.task:not(.dragging)')];
+  return els.reduce((closest, child) => {
+    const r = child.getBoundingClientRect();
+    const offset = y - r.top - r.height/2;
+    if (offset < 0 && offset > closest.offset) return { offset, el: child };
+    return closest;
+  }, { offset: -Infinity, el: null }).el;
+}
+function dropTask(q, y) {
+  if (!draggedId) return;
+  const tasks = getTasks();
+  const idx = tasks.findIndex(t => t.id === draggedId);
+  if (idx < 0) return;
+  const dragged = tasks[idx];
+  const [imp, urg] = QUAD_FLAGS[q];
+  dragged.important = !!imp; dragged.urgent = !!urg;
+  tasks.splice(idx, 1); // retirer
+  const refEl = dragAfter(document.getElementById('q-'+q), y);
+  const refId = refEl ? refEl.dataset.id : null;
+  if (refId) {
+    const refIdx = tasks.findIndex(t => t.id === refId);
+    tasks.splice(refIdx, 0, dragged);
+  } else {
+    let lastIdx = -1;
+    tasks.forEach((t,i) => { if (taskQuadrant(t) === q) lastIdx = i; });
+    tasks.splice(lastIdx + 1, 0, dragged);
+  }
+  setTasks(tasks);
+  renderTasks();
+}
+
+/* ── Édition d'une tâche ── */
+function openEditTask(id) {
+  const t = getTasks().find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('te-id').value = t.id;
+  document.getElementById('te-title').value = t.title;
+  document.getElementById('te-due').value = t.due || '';
+  document.getElementById('te-who').value = t.who || '';
+  document.getElementById('te-urgent').checked = !!t.urgent;
+  document.getElementById('te-important').checked = !!t.important;
+  openModal('modal-task');
+  setTimeout(() => document.getElementById('te-title').focus(), 220);
+}
+function saveEditTask() {
+  const id = document.getElementById('te-id').value;
+  const title = document.getElementById('te-title').value.trim();
+  if (!title) { shake('te-title'); return; }
+  const tasks = getTasks(); const t = tasks.find(x => x.id === id);
+  if (t) {
+    t.title = title;
+    t.due = document.getElementById('te-due').value;
+    t.who = document.getElementById('te-who').value.trim();
+    t.urgent = document.getElementById('te-urgent').checked;
+    t.important = document.getElementById('te-important').checked;
+  }
+  setTasks(tasks);
+  closeModal('modal-task');
+  renderTasks();
+  toast('Tâche modifiée ✓');
 }
 
 /* ══════════ OBJECTIFS / OKR ══════════ */
