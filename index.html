@@ -276,7 +276,13 @@ button{cursor:pointer;font-family:var(--fb)}
 }
 .sb-clock-date{font-size:11px;color:var(--dim);margin-top:3px;letter-spacing:.05em;text-transform:uppercase}
 
-#sidebar nav{flex:1;padding:10px 0;margin-top:6px}
+#sidebar nav{flex:1;padding:10px 0;margin-top:6px;overflow-y:auto}
+.nav-section{
+  font-family:var(--fd);font-size:8px;font-weight:700;letter-spacing:.22em;
+  color:var(--dim-2);text-transform:uppercase;
+  padding:14px 22px 6px;
+}
+.nav-section:first-child{padding-top:4px}
 .nav-item{
   display:flex;align-items:center;gap:12px;
   padding:12px 22px;border:none;background:none;width:100%;text-align:left;
@@ -1329,6 +1335,18 @@ button{cursor:pointer;font-family:var(--fb)}
         <span class="ni"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
         Accueil
       </button>
+
+      <div class="nav-section">Pilotage</div>
+      <button class="nav-item" data-tab="priorites" aria-selected="false">
+        <span class="ni"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
+        Priorités<span class="nav-badge" id="badge-priorites"></span>
+      </button>
+      <button class="nav-item" data-tab="objectifs" aria-selected="false">
+        <span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg></span>
+        Objectifs
+      </button>
+
+      <div class="nav-section">Quotidien</div>
       <button class="nav-item" data-tab="routines" aria-selected="false">
         <span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.2 2.2M16.9 16.9l2.2 2.2M19.1 4.9l-2.2 2.2M7.1 16.9l-2.2 2.2"/></svg></span>
         Routines<span class="nav-badge" id="badge-routines"></span>
@@ -1341,17 +1359,11 @@ button{cursor:pointer;font-family:var(--fb)}
         <span class="ni"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 8l9 6 9-6"/></svg></span>
         Emails
       </button>
+
+      <div class="nav-section">Performance</div>
       <button class="nav-item" data-tab="score" aria-selected="false">
         <span class="ni"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
         Score
-      </button>
-      <button class="nav-item" data-tab="priorites" aria-selected="false">
-        <span class="ni"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
-        Priorités<span class="nav-badge" id="badge-priorites"></span>
-      </button>
-      <button class="nav-item" data-tab="objectifs" aria-selected="false">
-        <span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg></span>
-        Objectifs
       </button>
       <button class="nav-item" data-tab="kpis" aria-selected="false">
         <span class="ni"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 5-7"/></svg></span>
@@ -1361,6 +1373,8 @@ button{cursor:pointer;font-family:var(--fb)}
         <span class="ni"><svg viewBox="0 0 24 24"><path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3V4z"/><path d="M4 4a3 3 0 013 3v13M9 9h7M9 13h7"/></svg></span>
         Débrief
       </button>
+
+      <div class="nav-section">Réglages</div>
       <button class="nav-item" data-tab="settings" aria-selected="false">
         <span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
         Système
@@ -1638,6 +1652,7 @@ button{cursor:pointer;font-family:var(--fb)}
           <input type="text" id="t-who" placeholder="Déléguer à (optionnel)" maxlength="40">
           <label class="task-chk"><input type="checkbox" id="t-urgent"> Urgent</label>
           <label class="task-chk"><input type="checkbox" id="t-important" checked> Important</label>
+          <label class="task-chk"><input type="checkbox" id="t-daily"> 🔁 Quotidienne</label>
           <button class="btn btn-solid btn-sm" onclick="addTask()">Ajouter</button>
         </div>
       </div>
@@ -1942,9 +1957,10 @@ button{cursor:pointer;font-family:var(--fb)}
       <label for="te-who">Déléguer à</label>
       <input type="text" id="te-who" maxlength="40" placeholder="Personne en charge (optionnel)">
     </div>
-    <div class="fg" style="display:flex;gap:20px;align-items:center">
+    <div class="fg" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
       <label class="task-chk" style="margin:0"><input type="checkbox" id="te-urgent"> Urgent</label>
       <label class="task-chk" style="margin:0"><input type="checkbox" id="te-important"> Important</label>
+      <label class="task-chk" style="margin:0"><input type="checkbox" id="te-daily"> 🔁 Quotidienne</label>
     </div>
     <button class="btn btn-solid" onclick="saveEditTask()" style="width:100%;justify-content:center;margin-top:6px">Enregistrer</button>
   </div>
@@ -2424,11 +2440,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initColorSwatches();
   initCalendar();
   checkMidnightReset();
+  resetDailyTasks();
   renderRoutines();
   updateBadges();
   updateSidebarUser();
   bindEnterKeys();
   startBgNet();
+  restoreFocus();
   renderHome();
 });
 
@@ -3466,6 +3484,7 @@ function addTask() {
     important: document.getElementById('t-important').checked,
     due: document.getElementById('t-due').value,
     who: document.getElementById('t-who').value.trim(),
+    daily: document.getElementById('t-daily').checked,
     done: false, star: false, created: Date.now()
   });
   setTasks(tasks);
@@ -3474,8 +3493,15 @@ function addTask() {
   document.getElementById('t-who').value = '';
   document.getElementById('t-urgent').checked = false;
   document.getElementById('t-important').checked = true;
+  document.getElementById('t-daily').checked = false;
   renderTasks();
   toast('Tâche ajoutée ✓');
+}
+/* réinitialise les tâches quotidiennes chaque nouveau jour */
+function resetDailyTasks() {
+  const tasks = getTasks(); let ch = false;
+  tasks.forEach(t => { if (t.daily && t.done && t.doneDate !== todayISO()) { t.done = false; ch = true; } });
+  if (ch) setTasks(tasks);
 }
 function taskQuadrant(t) {
   if (t.important && t.urgent) return 'do';
@@ -3483,7 +3509,7 @@ function taskQuadrant(t) {
   if (!t.important && t.urgent) return 'deleg';
   return 'drop';
 }
-function toggleTask(id){ const ts=getTasks(); const t=ts.find(x=>x.id===id); if(t)t.done=!t.done; setTasks(ts); renderTasks(); }
+function toggleTask(id){ const ts=getTasks(); const t=ts.find(x=>x.id===id); if(t){t.done=!t.done; t.doneDate=t.done?todayISO():null;} setTasks(ts); renderTasks(); }
 function starTask(id){
   const ts=getTasks(); const t=ts.find(x=>x.id===id);
   if (t) {
@@ -3500,12 +3526,13 @@ function taskRow(t) {
   const late = t.due && t.due < todayISO() && !t.done;
   const dd = t.due ? `<span class="task-tag ${late?'late':''}">⏱ ${t.due.slice(5).replace('-','/')}</span>` : '';
   const who = t.who ? `<span class="task-tag who">→ ${escH(t.who)}</span>` : '';
+  const daily = t.daily ? `<span class="task-tag" title="Tâche quotidienne">🔁 chaque jour</span>` : '';
   return `<div class="task ${t.done?'done':''}" id="task-${t.id}" data-id="${t.id}" draggable="true">
     <span class="task-handle" title="Glisser pour déplacer">⠿</span>
     <input type="checkbox" class="rcheck" ${t.done?'checked':''} onchange="toggleTask('${t.id}')" aria-label="Terminer">
     <div class="task-body">
       <div class="task-t">${escH(t.title)}</div>
-      ${(dd||who)?`<div class="task-meta">${dd}${who}</div>`:''}
+      ${(dd||who||daily)?`<div class="task-meta">${dd}${daily}${who}</div>`:''}
     </div>
     <button class="task-star ${t.star?'on':''}" onclick="starTask('${t.id}')" aria-label="Top 3" title="Marquer comme priorité du jour">★</button>
     <button class="task-edit" onclick="openEditTask('${t.id}')" aria-label="Modifier" title="Modifier">✎</button>
@@ -3612,6 +3639,7 @@ function openEditTask(id) {
   document.getElementById('te-who').value = t.who || '';
   document.getElementById('te-urgent').checked = !!t.urgent;
   document.getElementById('te-important').checked = !!t.important;
+  document.getElementById('te-daily').checked = !!t.daily;
   openModal('modal-task');
   setTimeout(() => document.getElementById('te-title').focus(), 220);
 }
@@ -3626,6 +3654,7 @@ function saveEditTask() {
     t.who = document.getElementById('te-who').value.trim();
     t.urgent = document.getElementById('te-urgent').checked;
     t.important = document.getElementById('te-important').checked;
+    t.daily = document.getElementById('te-daily').checked;
   }
   setTasks(tasks);
   closeModal('modal-task');
@@ -3770,57 +3799,100 @@ function renderKpis() {
   }).join('');
 }
 
-/* ══════════ FOCUS / POMODORO ══════════ */
-let focusMin = 25, focusLeft = 25*60, focusTimer = null, focusRunning = false;
+/* ══════════ FOCUS / POMODORO (basé sur l'horloge réelle + persistant) ══════════ */
+let focusMin = 25, focusLeft = 25*60, focusTimer = null, focusRunning = false, focusEndAt = 0;
+const FOCUS_RUN = 'lumos_focus_run';
 function getFocus(){ return JSON.parse(localStorage.getItem(K.focus) || '{}'); }
 function logFocus(min){ const f = getFocus(); f[todayISO()] = (f[todayISO()]||0) + min; localStorage.setItem(K.focus, JSON.stringify(f)); }
+function saveFocusRun(){
+  if (focusRunning) localStorage.setItem(FOCUS_RUN, JSON.stringify({ state:'running', endAt:focusEndAt, min:focusMin }));
+  else if (focusLeft < focusMin*60) localStorage.setItem(FOCUS_RUN, JSON.stringify({ state:'paused', left:focusLeft, min:focusMin }));
+  else localStorage.removeItem(FOCUS_RUN);
+}
 
-function openFocus(){ openModal('modal-focus'); renderFocus(); }
+function openFocus(){ openModal('modal-focus'); syncFocusPresets(); renderFocus(); }
+function syncFocusPresets(){
+  document.querySelectorAll('.focus-preset').forEach(b => b.classList.toggle('on', +b.dataset.min === focusMin));
+}
 function setFocusPreset(min, btn) {
   if (focusRunning) return;
   focusMin = min; focusLeft = min*60;
   document.querySelectorAll('.focus-preset').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
-  renderFocus();
+  saveFocusRun(); renderFocus();
 }
-function fmtMMSS(s){ const m=Math.floor(s/60), x=s%60; return `${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`; }
+function fmtMMSS(s){ s=Math.max(0,s); const m=Math.floor(s/60), x=s%60; return `${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`; }
+function computeLeft(){ return focusRunning ? Math.max(0, Math.round((focusEndAt - Date.now())/1000)) : focusLeft; }
 function renderFocus() {
-  document.getElementById('focus-time').textContent = fmtMMSS(focusLeft);
+  const left = computeLeft();
+  const tEl = document.getElementById('focus-time'); if (!tEl) return;
+  tEl.textContent = fmtMMSS(left);
   const circ = 2*Math.PI*88;
-  const done = 1 - focusLeft/(focusMin*60);
+  const done = 1 - left/(focusMin*60);
   document.getElementById('focus-ring').style.strokeDasharray = `${done*circ} ${circ}`;
-  document.getElementById('focus-state').textContent = focusRunning ? 'Concentration' : (focusLeft===focusMin*60 ? 'Prêt' : 'En pause');
-  document.getElementById('focus-start').textContent = focusRunning ? 'Pause' : (focusLeft===focusMin*60 ? 'Démarrer' : 'Reprendre');
-  const f = getFocus()[todayISO()] || 0;
-  document.getElementById('focus-today').textContent = `Aujourd'hui : ${f} min de focus`;
+  document.getElementById('focus-state').textContent = focusRunning ? 'Concentration' : (left===focusMin*60 ? 'Prêt' : 'En pause');
+  document.getElementById('focus-start').textContent = focusRunning ? 'Pause' : (left===focusMin*60 ? 'Démarrer' : 'Reprendre');
+  document.getElementById('focus-today').textContent = `Aujourd'hui : ${getFocus()[todayISO()]||0} min de focus`;
 }
-function toggleFocus() {
-  if (focusRunning) { clearInterval(focusTimer); focusRunning = false; updateFab(); renderFocus(); return; }
-  focusRunning = true; updateFab();
+function startFocusInterval() {
+  clearInterval(focusTimer);
   focusTimer = setInterval(() => {
-    focusLeft--;
-    if (focusLeft <= 0) {
-      clearInterval(focusTimer); focusRunning = false;
-      logFocus(focusMin);
-      focusLeft = focusMin*60;
-      updateFab(); renderFocus();
-      toast('Session terminée · +' + focusMin + ' min ✓');
-      beep(); if (typeof confetti==='function') confetti();
-      return;
-    }
+    if (computeLeft() <= 0) { completeFocus(); return; }
     renderFocus(); updateFab();
   }, 1000);
-  renderFocus();
+}
+function completeFocus() {
+  clearInterval(focusTimer);
+  focusRunning = false; focusLeft = focusMin*60; focusEndAt = 0;
+  localStorage.removeItem(FOCUS_RUN);
+  logFocus(focusMin);
+  updateFab(); renderFocus();
+  toast('Session terminée · +' + focusMin + ' min ✓');
+  beep(); if (typeof confetti==='function') confetti();
+  renderHome();
+}
+function toggleFocus() {
+  if (focusRunning) { // pause
+    focusLeft = computeLeft();
+    focusRunning = false; clearInterval(focusTimer);
+    saveFocusRun(); updateFab(); renderFocus(); return;
+  }
+  // démarrer / reprendre
+  focusRunning = true;
+  focusEndAt = Date.now() + focusLeft*1000;
+  saveFocusRun(); startFocusInterval(); updateFab(); renderFocus();
 }
 function resetFocus() {
-  clearInterval(focusTimer); focusRunning = false; focusLeft = focusMin*60;
+  clearInterval(focusTimer); focusRunning = false; focusLeft = focusMin*60; focusEndAt = 0;
+  localStorage.removeItem(FOCUS_RUN);
   updateFab(); renderFocus();
+}
+function restoreFocus() {
+  const raw = localStorage.getItem(FOCUS_RUN);
+  if (!raw) return;
+  let s; try { s = JSON.parse(raw); } catch { return; }
+  focusMin = s.min || 25;
+  if (s.state === 'running') {
+    if (s.endAt > Date.now()) { // toujours en cours → on continue
+      focusEndAt = s.endAt; focusRunning = true;
+      startFocusInterval();
+    } else { // s'est terminée pendant l'absence → on la comptabilise
+      focusRunning = false; focusLeft = focusMin*60;
+      localStorage.removeItem(FOCUS_RUN);
+      logFocus(focusMin);
+      toast('Session focus terminée · +' + focusMin + ' min ✓');
+    }
+  } else if (s.state === 'paused') {
+    focusLeft = s.left; focusRunning = false;
+  }
+  updateFab();
 }
 function updateFab() {
   const fab = document.getElementById('focus-fab');
   const t = document.getElementById('focus-fab-time');
+  if (!fab) return;
   fab.classList.toggle('running', focusRunning);
-  t.textContent = focusRunning ? fmtMMSS(focusLeft) : '';
+  t.textContent = focusRunning ? fmtMMSS(computeLeft()) : '';
 }
 function beep() {
   try {
