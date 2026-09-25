@@ -771,6 +771,75 @@ button{cursor:pointer;font-family:var(--fb)}
 .focus-today{margin-top:16px;font-family:var(--fd);font-size:10px;letter-spacing:.1em;color:var(--cyan-2);text-transform:uppercase}
 @media(max-width:600px){.eisen-grid{grid-template-columns:1fr}}
 
+/* ══════════ VISITES TECHNIQUES ══════════ */
+.vt-period{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.vt-chips{display:flex;gap:6px;flex-wrap:wrap}
+.vt-chip{font-family:var(--fd);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 11px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--dim);transition:all var(--t)}
+.vt-chip:hover{color:var(--cyan-2);border-color:var(--line-2)}
+.vt-chip.on{color:var(--cyan-2);border-color:var(--cyan);background:rgba(56,189,248,.1);box-shadow:var(--glow-sm)}
+.vt-chip b{font-weight:700;margin-left:4px;color:var(--ice)}
+.vt-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.vt-stat{padding:16px 16px 14px;text-align:center}
+.vt-stat-num{font-family:var(--fd);font-size:24px;font-weight:900;color:var(--cyan-2);line-height:1.1}
+.vt-stat.ok .vt-stat-num{color:var(--success)}
+.vt-stat.wait .vt-stat-num{color:#FBBF24}
+.vt-stat.todo .vt-stat-num{color:#F472B6}
+.vt-stat-lbl{font-family:var(--fd);font-size:9px;font-weight:500;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:8px}
+.vt-stat-sub{font-size:11.5px;color:var(--dim-2);margin-top:3px}
+@media(max-width:900px){.vt-stats{grid-template-columns:1fr 1fr}}
+
+.vt-card{padding:18px 20px;margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);position:relative;transition:box-shadow var(--t);animation:riIn .2s ease both}
+.vt-card:hover{box-shadow:0 0 16px rgba(56,189,248,.08)}
+.vt-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.vt-client{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--ice);letter-spacing:.02em}
+.vt-meta{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12.5px;color:var(--dim);margin-top:4px}
+.vt-meta a{color:var(--cyan-2);text-decoration:none}
+.vt-meta a:hover{text-decoration:underline}
+.vt-actions{display:flex;gap:6px}
+.vt-icon{background:none;border:1px solid var(--line);border-radius:5px;width:30px;height:30px;color:var(--dim);font-size:13px;transition:color var(--t),border-color var(--t)}
+.vt-icon:hover{color:var(--cyan-2);border-color:var(--cyan)}
+.vt-icon.del:hover{color:var(--danger);border-color:var(--danger)}
+.vt-lines{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+@media(max-width:700px){.vt-lines{grid-template-columns:1fr}}
+.vt-line{padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:rgba(5,12,22,.35)}
+[data-theme="light"] .vt-line{background:rgba(255,255,255,.5)}
+.vt-line.off{opacity:.6;border-style:dashed}
+.vt-line-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.vt-line-t{font-family:var(--fd);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.vt-line-amt{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--ice)}
+.vt-line-info{font-size:12px;color:var(--dim);line-height:1.5}
+.vt-line-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.vt-badge{font-family:var(--fd);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:3px;border:1px solid;white-space:nowrap}
+.vt-badge.todo{color:#F472B6;border-color:rgba(244,114,182,.35);background:rgba(244,114,182,.08)}
+.vt-badge.wait{color:#FBBF24;border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.08)}
+.vt-badge.late{color:var(--danger);border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.1)}
+.vt-badge.paid{color:var(--success);border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.08)}
+.vt-badge.none{color:var(--dim-2);border-color:var(--line)}
+.vt-files{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.vt-file{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;border:1px solid var(--line);border-radius:5px;font-size:12px;color:var(--ice);background:rgba(56,189,248,.05);max-width:100%}
+.vt-file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vt-file button{background:none;border:none;color:var(--cyan-2);font-size:12px;cursor:pointer;padding:0 3px}
+.vt-file button.x{color:var(--dim-2)}
+.vt-file button.x:hover{color:var(--danger)}
+.vt-notes{font-size:12.5px;color:var(--dim);margin-top:10px;white-space:pre-wrap;word-break:break-word}
+
+.vt-ledger-wrap{overflow-x:auto}
+.vt-ledger{width:100%;border-collapse:collapse;font-size:12.5px;min-width:620px}
+.vt-ledger th{font-family:var(--fd);font-size:8.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:left;padding:8px;border-bottom:1px solid var(--line-2)}
+.vt-ledger td{padding:8px;border-bottom:1px solid var(--line);color:var(--ice);vertical-align:middle}
+.vt-ledger td.num,.vt-ledger th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.vt-ledger tr.month td{font-family:var(--fd);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan-2);background:rgba(56,189,248,.05);padding:7px 8px}
+.vt-ledger tfoot td{font-family:var(--fd);font-weight:700;border-top:1px solid var(--line-2);border-bottom:none}
+
+.modal-wide{width:min(640px,94vw)}
+.vt-m-sec{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--ice);text-transform:uppercase;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.vt-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.vt-grid .vt-full{grid-column:1/-1}
+@media(max-width:520px){.vt-grid{grid-template-columns:1fr}}
+.fg input[type="date"]{color-scheme:dark}
+[data-theme="light"] .fg input[type="date"]{color-scheme:light}
+.fg input[type="file"]{padding:8px 10px;font-size:12.5px}
+
 /* ══════════ TABLEAU DE BORD / ACCUEIL ══════════ */
 .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
 .dash-stat{padding:18px 16px;text-align:center;cursor:pointer;transition:transform var(--t),box-shadow var(--t),border-color var(--t)}
@@ -1346,6 +1415,12 @@ button{cursor:pointer;font-family:var(--fb)}
         Objectifs
       </button>
 
+      <div class="nav-section">Activité</div>
+      <button class="nav-item" data-tab="visites" aria-selected="false">
+        <span class="ni"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/><path d="M9 10h6"/></svg></span>
+        Visites techniques<span class="nav-badge" id="badge-visites"></span>
+      </button>
+
       <div class="nav-section">Quotidien</div>
       <button class="nav-item" data-tab="routines" aria-selected="false">
         <span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.2 2.2M16.9 16.9l2.2 2.2M19.1 4.9l-2.2 2.2M7.1 16.9l-2.2 2.2"/></svg></span>
@@ -1697,6 +1772,44 @@ button{cursor:pointer;font-family:var(--fb)}
       <div id="goals-list"></div>
     </section>
 
+    <!-- ━━━ VISITES TECHNIQUES ━━━ -->
+    <section id="tab-visites" class="tab-panel" role="tabpanel">
+      <div class="page-header">
+        <div class="page-eyebrow">Module · Activité &amp; facturation</div>
+        <h1 class="page-title">Visites techniques</h1>
+        <p class="page-sub">Fiches clients, comptes rendus PDF et suivi des paiements — visite technique puis installation.</p>
+      </div>
+
+      <!-- Compta : synthèse -->
+      <div class="vt-period">
+        <span class="j-section-lbl" style="margin:0">Comptabilité</span>
+        <div class="vt-chips" id="vt-period"></div>
+      </div>
+      <div class="vt-stats">
+        <div class="panel corners vt-stat ok"><div class="vt-stat-num" id="vt-s-paid">0 €</div><div class="vt-stat-lbl">Encaissé</div><div class="vt-stat-sub" id="vt-s-paid-n"></div></div>
+        <div class="panel corners vt-stat wait"><div class="vt-stat-num" id="vt-s-wait">0 €</div><div class="vt-stat-lbl">Facturé · en attente</div><div class="vt-stat-sub" id="vt-s-wait-n"></div></div>
+        <div class="panel corners vt-stat todo"><div class="vt-stat-num" id="vt-s-todo">0 €</div><div class="vt-stat-lbl">À facturer</div><div class="vt-stat-sub" id="vt-s-todo-n"></div></div>
+        <div class="panel corners vt-stat"><div class="vt-stat-num" id="vt-s-total">0 €</div><div class="vt-stat-lbl">Chiffre d'affaires</div><div class="vt-stat-sub" id="vt-s-total-n"></div></div>
+      </div>
+
+      <!-- Barre d'outils -->
+      <div class="panel" style="padding:14px 16px;margin-bottom:18px">
+        <div class="task-add">
+          <input type="text" id="vt-search" placeholder="Rechercher un client, une ville, n° de facture…" oninput="renderVisites()">
+          <button class="btn btn-solid btn-sm" onclick="openVisite()">+ Nouvelle visite</button>
+        </div>
+        <div class="vt-chips" id="vt-filter" style="margin-top:12px"></div>
+      </div>
+
+      <div id="vt-list"></div>
+
+      <!-- Journal comptable -->
+      <div class="panel corners" style="padding:18px 20px;margin-top:22px">
+        <div class="j-section-lbl">Suivi des factures</div>
+        <div class="vt-ledger-wrap"><table class="vt-ledger" id="vt-ledger"></table></div>
+      </div>
+    </section>
+
     <!-- ━━━ KPIs ━━━ -->
     <section id="tab-kpis" class="tab-panel" role="tabpanel">
       <div class="page-header">
@@ -1881,6 +1994,7 @@ button{cursor:pointer;font-family:var(--fb)}
   <div id="bottom-nav">
     <nav>
       <button class="nav-item active" data-tab="home" aria-selected="true"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>Accueil</button>
+      <button class="nav-item" data-tab="visites" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg></span>Visites</button>
       <button class="nav-item" data-tab="routines" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span>Routines</button>
       <button class="nav-item" data-tab="agenda" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Agenda</button>
       <button class="nav-item" data-tab="emails" aria-selected="false"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 8l9 6 9-6"/></svg></span>Emails</button>
@@ -1963,6 +2077,55 @@ button{cursor:pointer;font-family:var(--fb)}
       <label class="task-chk" style="margin:0"><input type="checkbox" id="te-daily"> 🔁 Quotidienne</label>
     </div>
     <button class="btn btn-solid" onclick="saveEditTask()" style="width:100%;justify-content:center;margin-top:6px">Enregistrer</button>
+  </div>
+</div>
+
+<!-- ═══════════ VISITE TECHNIQUE ═══════════ -->
+<div class="overlay" id="modal-visite" role="dialog" aria-modal="true">
+  <div class="modal modal-wide">
+    <button class="mclose" onclick="closeModal('modal-visite')" aria-label="Fermer">✕</button>
+    <h2 class="modal-title" id="vt-m-title">Nouvelle visite technique</h2>
+    <input type="hidden" id="vt-id">
+
+    <div class="vt-m-sec">Client</div>
+    <div class="vt-grid">
+      <div class="fg vt-full"><label for="vt-client">Nom du client *</label><input type="text" id="vt-client" maxlength="80" placeholder="M. / Mme …"></div>
+      <div class="fg"><label for="vt-phone">Téléphone</label><input type="tel" id="vt-phone" maxlength="30"></div>
+      <div class="fg"><label for="vt-email">Email</label><input type="email" id="vt-email" maxlength="80"></div>
+      <div class="fg vt-full"><label for="vt-address">Adresse du chantier</label><input type="text" id="vt-address" maxlength="160" placeholder="Rue, code postal, ville"></div>
+      <div class="fg"><label for="vt-ref">Référence / donneur d'ordre</label><input type="text" id="vt-ref" maxlength="60" placeholder="Optionnel"></div>
+      <div class="fg"><label for="vt-date">Date de la visite</label><input type="date" id="vt-date"></div>
+    </div>
+
+    <div class="vt-m-sec">Visite technique</div>
+    <div class="vt-grid">
+      <div class="fg"><label for="vt-v-amount">Tarif visite (€)</label><input type="number" id="vt-v-amount" step="any" min="0"></div>
+      <div class="fg"><label for="vt-v-extra">Supplément (€)</label><input type="number" id="vt-v-extra" step="any" min="0" placeholder="0"></div>
+      <div class="fg vt-full"><label for="vt-v-extra-note">Motif du supplément</label><input type="text" id="vt-v-extra-note" maxlength="100" placeholder="Ex : déplacement, toiture complexe…"></div>
+      <div class="fg"><label for="vt-v-inv">N° de facture</label><input type="text" id="vt-v-inv" maxlength="30"></div>
+      <div class="fg"><label for="vt-v-sent">Facture envoyée le</label><input type="date" id="vt-v-sent"></div>
+      <div class="fg"><label for="vt-v-paid">Payée le</label><input type="date" id="vt-v-paid"></div>
+    </div>
+
+    <div class="vt-m-sec">
+      <label class="task-chk" style="margin:0"><input type="checkbox" id="vt-i-on" onchange="toggleInstallFields()"> Installation</label>
+    </div>
+    <div class="vt-grid" id="vt-i-fields">
+      <div class="fg"><label for="vt-i-date">Date d'installation</label><input type="date" id="vt-i-date"></div>
+      <div class="fg"><label for="vt-i-amount">Tarif installation (€)</label><input type="number" id="vt-i-amount" step="any" min="0"></div>
+      <div class="fg"><label for="vt-i-inv">N° de facture</label><input type="text" id="vt-i-inv" maxlength="30"></div>
+      <div class="fg"><label for="vt-i-sent">Facture envoyée le</label><input type="date" id="vt-i-sent"></div>
+      <div class="fg"><label for="vt-i-paid">Payée le</label><input type="date" id="vt-i-paid"></div>
+    </div>
+
+    <div class="vt-m-sec">Notes &amp; compte rendu</div>
+    <div class="fg"><label for="vt-notes">Notes</label><textarea id="vt-notes" maxlength="2000" placeholder="Mesures, remarques, matériel à prévoir…"></textarea></div>
+    <div class="fg">
+      <label for="vt-pdf">Joindre un compte rendu (PDF)</label>
+      <input type="file" id="vt-pdf" accept="application/pdf,.pdf" multiple>
+    </div>
+
+    <button class="btn btn-solid" onclick="saveVisite()" style="width:100%;justify-content:center;margin-top:6px">Enregistrer</button>
   </div>
 </div>
 
@@ -2056,7 +2219,8 @@ const K = {
   routines:'lumos_routines', agenda:'lumos_agenda', scores:'lumos_scores',
   notify:'lumos_notify', name:'lumos_name', theme:'lumos_theme', net:'lumos_net',
   auth:'lumos_auth', session:'lumos_session', journal:'lumos_journal',
-  tasks:'lumos_tasks', goals:'lumos_goals', kpis:'lumos_kpis', focus:'lumos_focus'
+  tasks:'lumos_tasks', goals:'lumos_goals', kpis:'lumos_kpis', focus:'lumos_focus',
+  visites:'lumos_visites'
 };
 const EV_COLORS = ['#38BDF8','#9B7BF8','#4ADE80','#F87171','#FBBF24','#F472B6'];
 let selColor = EV_COLORS[0];
@@ -2617,6 +2781,7 @@ function switchTab(id) {
   if (id === 'priorites') renderTasks();
   if (id === 'objectifs') renderGoals();
   if (id === 'kpis') renderKpis();
+  if (id === 'visites') renderVisites();
   if (id === 'home') renderHome();
 }
 
@@ -2755,6 +2920,10 @@ function updateBadges() {
   const urgent = getTasks().filter(t => !t.done && t.important && t.urgent).length;
   const pb = document.getElementById('badge-priorites');
   if (pb) { pb.textContent = urgent || ''; pb.classList.toggle('show', urgent > 0); }
+  // Visites : factures à envoyer ou paiements en retard
+  const vtAct = vtAllLines().filter(l => l.st === 'todo' || l.st === 'late').length;
+  const vb = document.getElementById('badge-visites');
+  if (vb) { vb.textContent = vtAct || ''; vb.classList.toggle('show', vtAct > 0); }
 }
 
 /* ── AGENDA ── */
@@ -3799,6 +3968,332 @@ function renderKpis() {
   }).join('');
 }
 
+/* ══════════ VISITES TECHNIQUES ══════════ */
+const VT_PRICE_VISIT = 200, VT_PRICE_INSTALL = 300, VT_LATE_DAYS = 30;
+let vtFilter = 'all', vtPeriod = 'all';
+
+function getVisites(){ return JSON.parse(localStorage.getItem(K.visites) || '[]'); }
+function setVisites(d){ localStorage.setItem(K.visites, JSON.stringify(d)); }
+
+/* Fichiers PDF : IndexedDB (localStorage est limité à ~5 Mo) */
+let vtDbP = null;
+function vtDb() {
+  if (!vtDbP) vtDbP = new Promise((res, rej) => {
+    const r = indexedDB.open('lumos_files', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('files');
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+  return vtDbP;
+}
+async function vtStore(mode, fn) {
+  const db = await vtDb();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files', mode);
+    const req = fn(tx.objectStore('files'));
+    tx.oncomplete = () => res(req && req.result);
+    tx.onerror = () => rej(tx.error);
+  });
+}
+const fileGet = id => vtStore('readonly', s => s.get(id));
+const filePut = (id, blob) => vtStore('readwrite', s => s.put(blob, id));
+const fileDel = id => vtStore('readwrite', s => s.delete(id));
+const fileClear = () => vtStore('readwrite', s => s.clear());
+
+/* Helpers compta */
+function euro(n){ return (n||0).toLocaleString('fr-FR', { style:'currency', currency:'EUR', minimumFractionDigits:0, maximumFractionDigits:2 }); }
+function fmtD(iso){ if (!iso) return ''; const [y,m,d] = iso.split('-'); return `${d}/${m}/${y}`; }
+function daysSince(iso){ return Math.floor((new Date(todayISO()) - new Date(iso)) / 864e5); }
+function vtLineStatus(l) {
+  if (l.paid) return 'paid';
+  if (l.sent) return daysSince(l.sent) > VT_LATE_DAYS ? 'late' : 'wait';
+  return 'todo';
+}
+const VT_ST_LABEL = { todo:'À facturer', wait:'En attente', late:'En retard', paid:'Payée' };
+
+/* Toutes les lignes facturables (visite + installation) de toutes les fiches */
+function vtLinesOf(v) {
+  const out = [];
+  const va = (+v.visit.amount||0) + (+v.visit.extra||0);
+  out.push({ v, kind:'visit', label:'Visite technique', date: v.date || '', amount: va, line: v.visit, st: vtLineStatus(v.visit) });
+  if (v.install.on) out.push({ v, kind:'install', label:'Installation', date: v.install.date || '', amount: +v.install.amount||0, line: v.install, st: vtLineStatus(v.install) });
+  return out;
+}
+function vtAllLines(){ return getVisites().flatMap(vtLinesOf); }
+function vtInPeriod(l) {
+  if (vtPeriod === 'all') return true;
+  const d = l.date || new Date(l.v.created).toISOString().slice(0,10);
+  return d.startsWith(vtPeriod);
+}
+
+/* ── Saisie ── */
+function toggleInstallFields() {
+  document.getElementById('vt-i-fields').style.display = document.getElementById('vt-i-on').checked ? '' : 'none';
+}
+function openVisite(id, withInstall) {
+  const v = id ? getVisites().find(x => x.id === id) : null;
+  const set = (k, val) => document.getElementById(k).value = val ?? '';
+  document.getElementById('vt-m-title').textContent = v ? 'Modifier la visite' : 'Nouvelle visite technique';
+  set('vt-id', v?.id);
+  set('vt-client', v?.client); set('vt-phone', v?.phone); set('vt-email', v?.email);
+  set('vt-address', v?.address); set('vt-ref', v?.ref); set('vt-date', v ? v.date : todayISO());
+  set('vt-v-amount', v ? v.visit.amount : VT_PRICE_VISIT); set('vt-v-extra', v?.visit.extra || '');
+  set('vt-v-extra-note', v?.visit.extraNote); set('vt-v-inv', v?.visit.inv);
+  set('vt-v-sent', v?.visit.sent); set('vt-v-paid', v?.visit.paid);
+  document.getElementById('vt-i-on').checked = !!(v?.install.on || withInstall);
+  set('vt-i-date', v?.install.date || (withInstall ? todayISO() : ''));
+  set('vt-i-amount', v?.install.amount ?? VT_PRICE_INSTALL);
+  set('vt-i-inv', v?.install.inv); set('vt-i-sent', v?.install.sent); set('vt-i-paid', v?.install.paid);
+  set('vt-notes', v?.notes);
+  document.getElementById('vt-pdf').value = '';
+  toggleInstallFields();
+  openModal('modal-visite');
+  setTimeout(() => document.getElementById(withInstall ? 'vt-i-date' : 'vt-client').focus(), 80);
+}
+async function saveVisite() {
+  const g = k => document.getElementById(k).value.trim();
+  const num = k => { const n = parseFloat(g(k)); return isNaN(n) ? 0 : n; };
+  const client = g('vt-client');
+  if (!client) { shake('vt-client'); return; }
+  const list = getVisites();
+  const id = g('vt-id');
+  let v = id ? list.find(x => x.id === id) : null;
+  if (!v) { v = { id: uid(), files: [], created: Date.now() }; list.unshift(v); }
+  Object.assign(v, {
+    client, phone: g('vt-phone'), email: g('vt-email'), address: g('vt-address'), ref: g('vt-ref'),
+    date: g('vt-date'), notes: g('vt-notes'),
+    visit: { amount: num('vt-v-amount'), extra: num('vt-v-extra'), extraNote: g('vt-v-extra-note'),
+             inv: g('vt-v-inv'), sent: g('vt-v-sent'), paid: g('vt-v-paid') },
+    install: { on: document.getElementById('vt-i-on').checked, date: g('vt-i-date'), amount: num('vt-i-amount'),
+               inv: g('vt-i-inv'), sent: g('vt-i-sent'), paid: g('vt-i-paid') }
+  });
+  // un paiement implique une facture envoyée
+  ['visit','install'].forEach(k => { if (v[k].paid && !v[k].sent) v[k].sent = v[k].paid; });
+  const files = document.getElementById('vt-pdf').files;
+  if (files.length) await vtAttach(v, files);
+  setVisites(list);
+  closeModal('modal-visite');
+  renderVisites(); updateBadges();
+  toast(id ? 'Visite modifiée ✓' : 'Visite enregistrée ✓');
+}
+function delVisite(id) {
+  const v = getVisites().find(x => x.id === id);
+  if (!v || !confirm(`Supprimer la fiche « ${v.client} » et ses comptes rendus ?`)) return;
+  (v.files||[]).forEach(f => fileDel(f.id).catch(()=>{}));
+  setVisites(getVisites().filter(x => x.id !== id));
+  renderVisites(); updateBadges();
+}
+
+/* ── Actions rapides facturation ── */
+function vtMarkSent(id, kind) {
+  const list = getVisites(); const v = list.find(x => x.id === id); const l = v[kind];
+  const inv = prompt('N° de facture (optionnel) :', l.inv || '');
+  if (inv === null) return;
+  l.inv = inv.trim(); l.sent = todayISO();
+  setVisites(list); renderVisites(); updateBadges();
+  toast('Facture marquée envoyée ✓');
+}
+function vtMarkPaid(id, kind) {
+  const list = getVisites(); const v = list.find(x => x.id === id); const l = v[kind];
+  l.paid = todayISO(); if (!l.sent) l.sent = l.paid;
+  setVisites(list); renderVisites(); updateBadges();
+  toast('Paiement enregistré ✓'); confetti();
+}
+function vtRemind(id, kind) {
+  const v = getVisites().find(x => x.id === id); const l = v[kind];
+  const amt = kind === 'visit' ? (+l.amount||0) + (+l.extra||0) : +l.amount||0;
+  const what = kind === 'visit' ? 'la visite technique' : "l'installation";
+  const subj = `Relance facture${l.inv ? ' n° ' + l.inv : ''}`;
+  const body = `Bonjour,\n\nSauf erreur de ma part, la facture${l.inv ? ' n° ' + l.inv : ''} relative à ${what}${v.address ? ' (' + v.address + ')' : ''}, envoyée le ${fmtD(l.sent)}, d'un montant de ${euro(amt)}, reste à ce jour impayée.\n\nPourriez-vous procéder au règlement dans les meilleurs délais ?\n\nCordialement`;
+  location.href = `mailto:${encodeURIComponent(v.email||'')}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+}
+
+/* ── Comptes rendus PDF ── */
+async function vtAttach(v, files) {
+  for (const f of files) {
+    if (f.type && f.type !== 'application/pdf') { toast(`${f.name} n'est pas un PDF`, true); continue; }
+    if (f.size > 25e6) { toast(`${f.name} dépasse 25 Mo`, true); continue; }
+    const fid = uid();
+    try {
+      await filePut(fid, f);
+      v.files.push({ id: fid, name: f.name, size: f.size, added: todayISO() });
+    } catch { toast('Impossible d\'enregistrer ' + f.name, true); }
+  }
+}
+function vtPickPdf(id) {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'application/pdf,.pdf'; inp.multiple = true;
+  inp.onchange = async () => {
+    const list = getVisites(); const v = list.find(x => x.id === id);
+    await vtAttach(v, inp.files);
+    setVisites(list); renderVisites();
+    toast('Compte rendu joint ✓');
+  };
+  inp.click();
+}
+async function vtOpenPdf(fid, download) {
+  const w = download ? null : window.open('', '_blank'); // ouvert tout de suite pour éviter le bloqueur de pop-up
+  const f = await fileGet(fid).catch(() => null);
+  if (!f) { if (w) w.close(); toast('Fichier introuvable sur cet appareil', true); return; }
+  const url = URL.createObjectURL(f);
+  if (w) w.location.href = url;
+  else {
+    const meta = getVisites().flatMap(v => v.files || []).find(x => x.id === fid);
+    const a = document.createElement('a'); a.href = url; a.download = meta?.name || 'compte-rendu.pdf'; a.click();
+  }
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+function vtDelPdf(id, fid) {
+  if (!confirm('Retirer ce compte rendu ?')) return;
+  const list = getVisites(); const v = list.find(x => x.id === id);
+  v.files = v.files.filter(f => f.id !== fid);
+  fileDel(fid).catch(()=>{});
+  setVisites(list); renderVisites();
+}
+
+/* ── Rendu ── */
+function vtSetFilter(f){ vtFilter = f; renderVisites(); }
+function vtSetPeriod(p){ vtPeriod = p; renderVisites(); }
+
+function renderVisites() {
+  const list = getVisites();
+  const now = todayISO(), yr = now.slice(0,4), mo = now.slice(0,7);
+  const monthName = new Date().toLocaleDateString('fr-FR', { month:'long' });
+  document.getElementById('vt-period').innerHTML = [['all','Tout'],[yr,yr],[mo,monthName]]
+    .map(([k,l]) => `<button class="vt-chip${vtPeriod===k?' on':''}" onclick="vtSetPeriod('${k}')">${l}</button>`).join('');
+
+  const lines = list.flatMap(vtLinesOf).filter(vtInPeriod);
+  const sum = st => lines.filter(l => st.includes(l.st)).reduce((s,l) => s + l.amount, 0);
+  const cnt = st => lines.filter(l => st.includes(l.st)).length;
+  const plural = (n, w) => `${n} ${w}${n>1?'s':''}`;
+  document.getElementById('vt-s-paid').textContent = euro(sum(['paid']));
+  document.getElementById('vt-s-paid-n').textContent = plural(cnt(['paid']), 'facture');
+  document.getElementById('vt-s-wait').textContent = euro(sum(['wait','late']));
+  document.getElementById('vt-s-wait-n').textContent = plural(cnt(['wait','late']), 'facture') + (cnt(['late']) ? ` · ${cnt(['late'])} en retard` : '');
+  document.getElementById('vt-s-todo').textContent = euro(sum(['todo']));
+  document.getElementById('vt-s-todo-n').textContent = plural(cnt(['todo']), 'prestation');
+  document.getElementById('vt-s-total').textContent = euro(lines.reduce((s,l) => s + l.amount, 0));
+  const nv = lines.filter(l => l.kind==='visit').length, ni = lines.filter(l => l.kind==='install').length;
+  document.getElementById('vt-s-total-n').textContent = `${plural(nv,'visite')} · ${plural(ni,'installation')}`;
+
+  // filtres par statut
+  const visitsIn = list.filter(v => vtLinesOf(v).some(vtInPeriod));
+  const has = (v, st) => vtLinesOf(v).some(l => l.st === st);
+  const F = [['all','Toutes', visitsIn.length], ['todo','À facturer'], ['wait','En attente'], ['late','En retard'], ['paid','Soldées']];
+  document.getElementById('vt-filter').innerHTML = F.map(([k,l,n]) => {
+    const c = n ?? visitsIn.filter(v => k === 'paid' ? vtLinesOf(v).every(x => x.st==='paid') : has(v,k)).length;
+    return `<button class="vt-chip${vtFilter===k?' on':''}" onclick="vtSetFilter('${k}')">${l}<b>${c}</b></button>`;
+  }).join('');
+
+  const q = (document.getElementById('vt-search').value || '').toLowerCase();
+  const shown = visitsIn.filter(v => {
+    if (vtFilter === 'paid' && !vtLinesOf(v).every(x => x.st==='paid')) return false;
+    if (vtFilter !== 'all' && vtFilter !== 'paid' && !has(v, vtFilter)) return false;
+    if (!q) return true;
+    return [v.client, v.address, v.phone, v.email, v.ref, v.visit.inv, v.install.inv, v.notes]
+      .some(s => (s||'').toLowerCase().includes(q));
+  }).sort((a,b) => (b.date||'').localeCompare(a.date||'') || b.created - a.created);
+
+  const cont = document.getElementById('vt-list');
+  if (!list.length) cont.innerHTML = `<p class="j-empty">Aucune visite. Cliquez sur « + Nouvelle visite » pour créer votre première fiche client.</p>`;
+  else if (!shown.length) cont.innerHTML = `<p class="j-empty">Aucune visite ne correspond à ce filtre.</p>`;
+  else cont.innerHTML = shown.map(vtCard).join('');
+
+  renderVtLedger(lines);
+}
+
+function vtLineHtml(v, l) {
+  const L = l.line, st = l.st;
+  let info = '';
+  if (l.kind === 'visit' && +L.extra) info += `Dont supplément ${euro(+L.extra)}${L.extraNote ? ' · ' + escH(L.extraNote) : ''}<br>`;
+  if (l.kind === 'install' && L.date) info += `Installation le ${fmtD(L.date)}<br>`;
+  if (L.inv) info += `Facture n° ${escH(L.inv)}<br>`;
+  if (st === 'todo') info += 'Facture pas encore envoyée';
+  if (st === 'wait' || st === 'late') info += `Envoyée le ${fmtD(L.sent)} · il y a ${daysSince(L.sent)} j`;
+  if (st === 'paid') info += `Payée le ${fmtD(L.paid)}${L.sent && L.sent !== L.paid ? ` · envoyée le ${fmtD(L.sent)}` : ''}`;
+  let btns = '';
+  if (st === 'todo') btns = `<button class="btn btn-sm" onclick="vtMarkSent('${v.id}','${l.kind}')">📤 Facture envoyée</button>`;
+  if (st === 'wait' || st === 'late') btns = `<button class="btn btn-sm btn-solid" onclick="vtMarkPaid('${v.id}','${l.kind}')">✓ Paiement reçu</button>`
+    + (st === 'late' ? `<button class="btn btn-sm btn-ghost" onclick="vtRemind('${v.id}','${l.kind}')">✉ Relancer</button>` : '');
+  return `<div class="vt-line">
+    <div class="vt-line-h"><span class="vt-line-t">${l.label}</span><span class="vt-badge ${st}">${VT_ST_LABEL[st]}</span></div>
+    <div class="vt-line-amt">${euro(l.amount)}</div>
+    <div class="vt-line-info">${info}</div>
+    ${btns ? `<div class="vt-line-btns">${btns}</div>` : ''}
+  </div>`;
+}
+
+function vtCard(v) {
+  const lines = vtLinesOf(v);
+  const meta = [
+    v.date ? `📅 ${fmtD(v.date)}` : '',
+    v.address ? `📍 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.address)}" target="_blank" rel="noopener">${escH(v.address)}</a>` : '',
+    v.phone ? `📞 <a href="tel:${escH(v.phone.replace(/\s/g,''))}">${escH(v.phone)}</a>` : '',
+    v.email ? `✉ <a href="mailto:${escH(v.email)}">${escH(v.email)}</a>` : '',
+    v.ref ? `🏷 ${escH(v.ref)}` : ''
+  ].filter(Boolean).map(s => `<span>${s}</span>`).join('');
+  const installBox = v.install.on ? vtLineHtml(v, lines[1]) : `<div class="vt-line off">
+      <div class="vt-line-h"><span class="vt-line-t">Installation</span><span class="vt-badge none">Non prévue</span></div>
+      <div class="vt-line-info">Si le client signe, ajoutez l'installation (${euro(VT_PRICE_INSTALL)}).</div>
+      <div class="vt-line-btns"><button class="btn btn-sm btn-ghost" onclick="openVisite('${v.id}',true)">+ Ajouter l'installation</button></div>
+    </div>`;
+  const files = (v.files||[]).map(f => `<span class="vt-file" title="${escH(f.name)} · ajouté le ${fmtD(f.added)}">
+      📄 <span>${escH(f.name)}</span>
+      <button onclick="vtOpenPdf('${f.id}')" aria-label="Ouvrir">Ouvrir</button>
+      <button onclick="vtOpenPdf('${f.id}',true)" aria-label="Télécharger">⭳</button>
+      <button class="x" onclick="vtDelPdf('${v.id}','${f.id}')" aria-label="Retirer">×</button>
+    </span>`).join('');
+  return `<div class="vt-card">
+    <div class="vt-card-top">
+      <div style="min-width:0;flex:1">
+        <div class="vt-client">${escH(v.client)}</div>
+        <div class="vt-meta">${meta}</div>
+      </div>
+      <div class="vt-actions">
+        <button class="vt-icon" onclick="openVisite('${v.id}')" aria-label="Modifier" title="Modifier">✎</button>
+        <button class="vt-icon del" onclick="delVisite('${v.id}')" aria-label="Supprimer" title="Supprimer">×</button>
+      </div>
+    </div>
+    <div class="vt-lines">${vtLineHtml(v, lines[0])}${installBox}</div>
+    ${v.notes ? `<div class="vt-notes">${escH(v.notes)}</div>` : ''}
+    <div class="vt-files">
+      ${files || '<span class="vt-line-info">Aucun compte rendu joint.</span>'}
+      <button class="btn btn-sm btn-ghost" onclick="vtPickPdf('${v.id}')">📎 Joindre un PDF</button>
+    </div>
+  </div>`;
+}
+
+function renderVtLedger(lines) {
+  const tbl = document.getElementById('vt-ledger');
+  if (!lines.length) { tbl.innerHTML = `<tr><td class="j-empty" style="border:none">Aucune facture sur cette période.</td></tr>`; return; }
+  const sorted = [...lines].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  let month = null, rows = '';
+  sorted.forEach(l => {
+    const m = l.date ? l.date.slice(0,7) : '';
+    if (m !== month) {
+      month = m;
+      const lbl = m ? new Date(m + '-01T12:00').toLocaleDateString('fr-FR', { month:'long', year:'numeric' }) : 'Sans date';
+      const tot = sorted.filter(x => (x.date ? x.date.slice(0,7) : '') === m).reduce((s,x) => s + x.amount, 0);
+      rows += `<tr class="month"><td colspan="7">${lbl}</td><td class="num">${euro(tot)}</td></tr>`;
+    }
+    rows += `<tr>
+      <td>${fmtD(l.date) || '—'}</td>
+      <td>${escH(l.v.client)}</td>
+      <td>${l.label}</td>
+      <td>${escH(l.line.inv || '') || '—'}</td>
+      <td>${fmtD(l.line.sent) || '—'}</td>
+      <td>${fmtD(l.line.paid) || '—'}</td>
+      <td><span class="vt-badge ${l.st}">${VT_ST_LABEL[l.st]}</span></td>
+      <td class="num">${euro(l.amount)}</td>
+    </tr>`;
+  });
+  const total = lines.reduce((s,l) => s + l.amount, 0);
+  const paid = lines.filter(l => l.st === 'paid').reduce((s,l) => s + l.amount, 0);
+  tbl.innerHTML = `<thead><tr><th>Date</th><th>Client</th><th>Prestation</th><th>N° facture</th><th>Envoyée</th><th>Payée</th><th>Statut</th><th class="num">Montant</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr><td colspan="5">Total ${euro(total)}</td><td colspan="2" style="color:var(--success)">Encaissé ${euro(paid)}</td><td class="num" style="color:#FBBF24">Reste ${euro(total - paid)}</td></tr></tfoot>`;
+}
+
 /* ══════════ FOCUS / POMODORO (basé sur l'horloge réelle + persistant) ══════════ */
 let focusMin = 25, focusLeft = 25*60, focusTimer = null, focusRunning = false, focusEndAt = 0;
 const FOCUS_RUN = 'lumos_focus_run';
@@ -3930,14 +4425,22 @@ function openReset(){ openModal('modal-reset'); }
 function resetAll() {
   Object.values(K).forEach(k => localStorage.removeItem(k));
   closeModal('modal-reset');
-  location.reload();
+  fileClear().catch(()=>{}).finally(() => location.reload());
 }
-function exportData() {
+const blobToDataURL = b => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); });
+async function exportData() {
   const data = {};
   Object.entries(K).forEach(([k,v]) => {
     const raw = localStorage.getItem(v);
     if (raw) try { data[k] = JSON.parse(raw); } catch { data[k] = raw; }
   });
+  // comptes rendus PDF des visites techniques
+  const files = {};
+  for (const f of getVisites().flatMap(v => v.files || [])) {
+    const b = await fileGet(f.id).catch(() => null);
+    if (b) files[f.id] = await blobToDataURL(b);
+  }
+  if (Object.keys(files).length) data._files = files;
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -3949,10 +4452,14 @@ function importData(){ document.getElementById('import-file').click(); }
 function handleImport(inp) {
   const f = inp.files[0]; if (!f) return;
   const r = new FileReader();
-  r.onload = e => {
+  r.onload = async e => {
     try {
       const d = JSON.parse(e.target.result);
       Object.entries(K).forEach(([k,v]) => { if (d[k] !== undefined) localStorage.setItem(v, JSON.stringify(d[k])); });
+      for (const [fid, url] of Object.entries(d._files || {})) {
+        const b = await (await fetch(url)).blob();
+        await filePut(fid, b).catch(()=>{});
+      }
       toast('Import réussi ✓');
       setTimeout(() => location.reload(), 700);
     } catch { toast('Fichier invalide', true); }

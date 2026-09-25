@@ -1,5 +1,5 @@
 /* Lumos service worker — cache offline */
-const CACHE = 'lumos-v1';
+const CACHE = 'lumos-v2';
 const ASSETS = [
   './',
   './index.html',
